@@ -79,6 +79,7 @@ class Pairing:
         # considered to be periodic.)
         return self._c - self._a
 
+    #TODO Separate checking and performing?
     def contract( self, start, width ):
         """
         Attempts to contract the interval [start,end], where
@@ -93,15 +94,44 @@ class Pairing:
         end = start + width - 1
 
         # For domain: test disjointness, and shift if necessary.
+        shiftDom = False
         if end < self._a:
             # Need to shift domain.
-            self._a -= width
-            self._b -= width
+            shiftDom = True
         elif start <= self._b:
             # Not disjoint from domain!
             raise PairingNotDisjoint( self, start, width )
-        #TODO
-        pass
+
+        # For range: test disjointness, and shift if necessary.
+        shiftRan = False
+        if end < self._c:
+            # Need to shift range.
+            shiftRan = True
+        elif start <= self._d:
+            # Not disjoint from range!
+            raise PairingNotDisjoint( self, start, width )
+
+        # Perform shifts.
+        if shiftDom:
+            self._a -= width
+            self._b -= width
+        if shiftRan:
+            self._c -= width
+            self._d -= width
+
+    def trim(self):
+        """
+        If this is an orientation-reversing pairing, then trims this pairing
+        to ensure that the domain and range are disjoint.
+
+        This routine does nothing if this pairing is orientation-preserving.
+        """
+        if self._preserving or self._b < self._c:
+            return
+        # This ensures that b is strictly less than the average of a and d,
+        # and c is strictly greater than the average.
+        self._b = ( self._a + self._d - 1 ) // 2
+        self._c = ( self._a + self._d + 2 ) // 2
 
     def mergeWith( self, other ):
         """
@@ -111,7 +141,7 @@ class Pairing:
         In detail, if this pairing and the other pairing are both periodic,
         then this routins merges these two pairings, and returns the new
         periodic pairing that results from this merger; otherwise, this
-        routine returns None.
+        routine does nothing, and returns None.
         """
         #TODO
         pass
