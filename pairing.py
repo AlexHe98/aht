@@ -119,6 +119,12 @@ class Pairing:
             self._c -= width
             self._d -= width
 
+    def truncate( self, newBound ):
+        """
+        """
+        #TODO
+        pass
+
     def trim(self):
         """
         If this is an orientation-reversing pairing, then trims this pairing
@@ -142,6 +148,13 @@ class Pairing:
         then this routins merges these two pairings, and returns the new
         periodic pairing that results from this merger; otherwise, this
         routine does nothing, and returns None.
+        """
+        #TODO
+        pass
+
+    def transmitBy( self, other ):
+        """
+        Transmits this pairing by the other pairing.
         """
         #TODO
         pass
