@@ -28,8 +28,6 @@ class Weights:
         ( width<i>, weight<i> ), where:
         --> width<i> is a positive integer; and
         --> weight<i> is a list containing precisely d positive integers.
-        Moreover, for each i in { 1, ..., L-1 }, the values of weight<i-1>
-        and weight<i> should be distinct.
 
         Letting sum<i> = width<0> + ... + width<i>, this routine uses the
         given data to construct a map on { 1, ..., N }, where N = sum<L-1>,
@@ -42,6 +40,7 @@ class Weights:
         """
         total = 0
         self._weights = []
+        previousWeight = []
         for i in range( len(data) ):
             width, weight = data[i]
             if i == 0:
@@ -49,12 +48,16 @@ class Weights:
             else:
                 if self._dim != len(weight):
                     raise WeightDimensionError( self._dim, len(weight) )
-                if weight == previousWeight:
-                    #TODO Raise error, or perhaps handle more elegantly?
-                    pass
-            previousWeight = weight
+
+            # Append a new subinterval. If this new subinterval is assigned
+            # the same weight as the previous subinterval, then merge these
+            # two subintervals.
             total += width
-            self._weights.append( [ total, weight ] )
+            if weight == previousWeight:
+                self._weights[-1] = [ total, weight ]
+            else:
+                self._weights.append( [ total, weight ] )
+            previousWeight = weight
         self._intervalLength = total
 
     def __str__(self):
