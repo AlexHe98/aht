@@ -88,17 +88,34 @@ class Weights:
         """
         return self._intervalLength
 
+    def countSubintervals(self):
+        """
+        Returns the number of subintervals of constant weight given by this
+        weight mapping.
+        """
+        return len( self._weights )
+
     def setZero( self, start, width ):
         """
         Sets the weights on the interval [start,end] to zero, where
         end = start + width - 1.
 
+        Let m = self.countSubintervals(). This routine runs in O(m^2)-time.
+
         Pre-condition:
         --> end <= self.intervalLength().
+
+        TODO:
+        --> Optimise: improve running time from O(m^2) to O(m).
         """
+        #TODO This routine could be improved to O(m)-time by encoding
+        # self._weights as a linked list.
         end = start + width - 1
         zero = [0] * self.dimension()
         previousEnd = 0
+
+        # Loop is O(m)-time. With a linked list, this could be replaced with
+        # a functionally-equivalent O(m)-time loop.
         for i in range( len( self._weights ) ):
             currentEnd, currentWeight = self._weights[i]
             if start <= currentEnd:
@@ -108,6 +125,8 @@ class Weights:
 
         # Insert new subinterval(s) to indicate the weight changing from
         # currentWeight to zero.
+        # This is O(m)-time because each insertion requires O(m)-time. With a
+        # linked list, this could be improved to O(1)-time.
         if start - 1 > previousEnd:
             self._weights.insert( i, [ start - 1, currentWeight ] )
             i += 1
@@ -116,6 +135,8 @@ class Weights:
 
         # To finish, delete all subintervals consisting entirely of entries
         # that are now assigned zero weight.
+        # This loop is O(m^2)-time because each pop requires O(m)-time. With
+        # a linked list, this loop could be improved to O(m)-time.
         while end >= self._weights[i][0]:
             self._weights.pop(i)
 
