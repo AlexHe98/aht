@@ -260,22 +260,3 @@ class Weights:
         """
         #TODO
         pass
-
-
-if __name__ == "__main__":
-    #TODO Test code.
-    w = Weights( [
-        ( 2, [1,2,3] ),
-        ( 3, [4,5,6] ),
-        ( 2, [3,4,5] ),
-        ( 3, [2,3,4] ),
-        ( 3, [1,2,3] ) ] )
-    print( w.detail() )
-
-    print( "Set [2,3] to zero." )
-    w.setZero( 2, 2 )
-    print( w.detail() )
-
-    print( "Set [5,10] to zero." )
-    w.setZero( 5, 6 )
-    print( w.detail() )
