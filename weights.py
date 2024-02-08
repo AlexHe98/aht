@@ -106,15 +106,18 @@ class Weights:
             else:
                 previousEnd = currentEnd
 
-        #TODO
-        #
-        if start == previousEnd + 1:
-            self._weights.pop(i)
-        else:
-            self._weights[i][0] = start - 1
+        # Insert new subinterval(s) to indicate the weight changing from
+        # currentWeight to zero.
+        if start - 1 > previousEnd:
+            self._weights.insert( i, [ start - 1, currentWeight ] )
             i += 1
-        #TODO
-        pass
+        self._weights.insert( i, [ end, zero ] )
+        i += 1
+
+        # To finish, delete all subintervals consisting entirely of entries
+        # that are now assigned zero weight.
+        while end >= self._weights[i][0]:
+            self._weights.pop(i)
 
     def append(self):
         """
@@ -139,8 +142,18 @@ class Weights:
 
 if __name__ == "__main__":
     #TODO Test code.
-    w = Weights( [ ( 2, [1,2,3] ), ( 3, [4,5,6] ) ] )
-    print(w)
-    print( repr(w) )
+    w = Weights( [
+        ( 2, [1,2,3] ),
+        ( 3, [4,5,6] ),
+        ( 2, [4,5,6] ),
+        ( 3, [2,3,4] ),
+        ( 3, [1,2,3] ) ] )
     print( w.detail() )
-    w = Weights( [ ( 2, [1,2,3] ), ( 3, [4,5] ) ] )
+
+    print( "Set [2,3] to zero." )
+    w.setZero( 2, 2 )
+    print( w.detail() )
+
+    print( "Set [5,10] to zero." )
+    w.setZero( 5, 6 )
+    print( w.detail() )
