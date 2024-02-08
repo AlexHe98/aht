@@ -133,6 +133,8 @@ class Weights:
             else:
                 previousEnd = currentEnd
 
+    #TODO Test this routine thoroughly, especially in special cases involving
+    #   subintervals that are already set to zero.
     def setZero( self, start, width ):
         """
         Sets the weights on the interval [start,end] to zero, where
@@ -148,19 +150,25 @@ class Weights:
         --> Optimise: improve running time from O(m^2) to O(m).
         """
         #TODO This routine could be improved to O(m)-time by encoding
-        # self._weights as a linked list.
+        #   self._weights as a linked list.
         end = start + width - 1
         zero = [0] * self.dimension()
 
         # In O(m)-time, find the subinterval [p,q] that contains start.
         i, p, q, assignedWeight = self._findSubinterval(start)
 
-        #TODO Handle entries that are already mapped to zero.
-        # If necessary, insert a new subinterval to indicate the weight
-        # changing from assignedWeight to zero.
-        # This insertion requires O(m)-time. With a linked list, this could
-        # be improved to O(1)-time.
-        if start > p:
+        # If start > p, then the weight on the subinterval [p,start-1] should
+        # remain as the original assignedWeight (i.e., it does not need to be
+        # set to zero). We keep track of this by inserting a new subinterval.
+        #TODO This insertion requires O(m)-time. With a linked list, this
+        #   could be improved to O(1)-time.
+        zeroBefore = False
+        if start == p:
+            if i > 0 and self._weights[i-1][1] == zero:
+                zeroBefore = True
+        else:
+            if assignedWeight == zero:
+                zeroBefore  = True
             self._weights.insert( i, [ start - 1, assignedWeight ] )
             i += 1
 
@@ -171,11 +179,27 @@ class Weights:
         while end >= self._weights[i][0]:
             self._weights.pop(i)
 
-        # To finish, insert a final new subinterval to indicate the weight
-        # changing from zero back to something non-zero.
-        # This insertion requires O(m)-time. With a linked list, this could
-        # be improved to O(1)-time.
-        self._weights.insert( i, [ end, zero ] )
+        # Finish by setting the weight on [start,end] to zero. How this is
+        # achieved depends on whether (start-1) and/or (end+1) are already
+        # assigned zero weight.
+        #TODO In the worst case, this last step requires O(m)-time, since it
+        #   might involve either a pop or an insertion operation. With a
+        #   linked list, this could be improved to O(1)-time.
+        if self._weights[i][1] == zero:
+            # In this case, we already have a subinterval S with zero weight,
+            # so there is no need to create a new such subinterval. If S is
+            # already preceded by a subinterval R with zero weight, then we
+            # need to merge R and S.
+            if zeroBefore:
+                self._weights.pop(i-1)
+        else:
+            # In this case, we need to create a new subinterval S with zero
+            # weight. If S is already preceded by a subinterval R with zero
+            # weight, then we need to merge R and S.
+            if zeroBefore:
+                self._weights[i-1] = [ end, zero ]
+            else:
+                self._weights.insert( i, [ end, zero ] )
 
     def addWeight( self, weight, start, width ):
         """
