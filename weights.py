@@ -5,6 +5,14 @@ integer N.
 from orbiterror import *
 
 
+def _vectorSum( v, w ):
+    """
+    Pre-condition:
+    --> len(v) == len(w).
+    """
+    return [ v[i] + w[i] for i in range( len(v) ) ]
+
+
 class Weights:
     """
     A map assigning weight vectors to each element of { 1, ..., N }, for some
@@ -20,6 +28,9 @@ class Weights:
         ( width<i>, weight<i> ), where:
         --> width<i> is a positive integer; and
         --> weight<i> is a list containing precisely d positive integers.
+        Moreover, for each i in { 1, ..., L-1 }, the values of weight<i-1>
+        and weight<i> should be distinct.
+
         Letting sum<i> = width<0> + ... + width<i>, this routine uses the
         given data to construct a map on { 1, ..., N }, where N = sum<L-1>,
         as follows:
@@ -38,6 +49,10 @@ class Weights:
             else:
                 if self._dim != len(weight):
                     raise WeightDimensionError( self._dim, len(weight) )
+                if weight == previousWeight:
+                    #TODO Raise error, or perhaps handle more elegantly?
+                    pass
+            previousWeight = weight
             total += width
             self._weights.append( [ total, weight ] )
         self._intervalLength = total
@@ -95,6 +110,26 @@ class Weights:
         """
         return len( self._weights )
 
+    def _findSubinterval( self, x ):
+        """
+        Finds i such that the ith subinterval [p,q] contains x, and returns
+        the tuple (i, p, q, w), where w is the weight assigned to each
+        integer in [p,q].
+
+        Let m = self.countSubintervals(). This routine runs in O(m)-time.
+
+        Pre-condition:
+        --> The parameter x is a positive integer such that
+            x <= self.intervalLength().
+        """
+        previousEnd = 0
+        for i in range( len( self._weights ) ):
+            currentEnd, currentWeight = self._weights[i]
+            if x <= currentEnd:
+                return ( i, previousEnd + 1, currentEnd, currentWeight )
+            else:
+                previousEnd = currentEnd
+
     def setZero( self, start, width ):
         """
         Sets the weights on the interval [start,end] to zero, where
@@ -103,7 +138,8 @@ class Weights:
         Let m = self.countSubintervals(). This routine runs in O(m^2)-time.
 
         Pre-condition:
-        --> end <= self.intervalLength().
+        --> The parameters start and width are positive integers such that
+            start + width - 1 <= self.intervalLength().
 
         TODO:
         --> Optimise: improve running time from O(m^2) to O(m).
@@ -112,33 +148,71 @@ class Weights:
         # self._weights as a linked list.
         end = start + width - 1
         zero = [0] * self.dimension()
-        previousEnd = 0
 
-        # Loop is O(m)-time. With a linked list, this could be replaced with
-        # a functionally-equivalent O(m)-time loop.
-        for i in range( len( self._weights ) ):
-            currentEnd, currentWeight = self._weights[i]
-            if start <= currentEnd:
-                break
-            else:
-                previousEnd = currentEnd
+        # In O(m)-time, find the subinterval [p,q] that contains start.
+        i, p, q, assignedWeight = self._findSubinterval(start)
 
-        # Insert new subinterval(s) to indicate the weight changing from
-        # currentWeight to zero.
-        # This is O(m)-time because each insertion requires O(m)-time. With a
-        # linked list, this could be improved to O(1)-time.
-        if start - 1 > previousEnd:
-            self._weights.insert( i, [ start - 1, currentWeight ] )
+        #TODO Handle entries that are already mapped to zero.
+        # If necessary, insert a new subinterval to indicate the weight
+        # changing from assignedWeight to zero.
+        # This insertion requires O(m)-time. With a linked list, this could
+        # be improved to O(1)-time.
+        if start > p:
+            self._weights.insert( i, [ start - 1, assignedWeight ] )
             i += 1
-        self._weights.insert( i, [ end, zero ] )
-        i += 1
 
-        # To finish, delete all subintervals consisting entirely of entries
-        # that are now assigned zero weight.
+        # Delete all subintervals consisting entirely of entries that should
+        # now be assigned zero weight.
         # This loop is O(m^2)-time because each pop requires O(m)-time. With
         # a linked list, this loop could be improved to O(m)-time.
         while end >= self._weights[i][0]:
             self._weights.pop(i)
+
+        # To finish, insert a final new subinterval to indicate the weight
+        # changing from zero back to something non-zero.
+        # This insertion requires O(m)-time. With a linked list, this could
+        # be improved to O(1)-time.
+        self._weights.insert( i, [ end, zero ] )
+
+    def addWeight( self, weight, start, width ):
+        """
+        Adds the given weight to the image of each element of the interval
+        [start,end], where end = start + width - 1.
+
+        Let m = self.countSubintervals(), and let C denote the worst-case
+        complexity of adding the given weight to any particular vector in the
+        image of this weight mapping (roughly, C scales logarithmically with
+        the size of the integers in the weight vectors). ...
+
+        Pre-condition:
+        --> The parameters start and width are positive integers such that
+            start + width - 1 <= self.intervalLength().
+
+        TODO:
+        """
+        #TODO
+        end = start + width - 1
+
+        # In O(m)-time, find the subinterval [p,q] that contains start.
+        i, p, q, assignedWeight = self._findSubinterval(start)
+
+        #TODO
+        # ...
+        if start > p:
+            self._weights.insert( i, [ start - 1, assignedWeight ] )
+            i += 1
+
+        # ...
+        while end >= self._weights[i][0]:
+            currentEnd, assignedWeight = self._weights[i]
+            self._weights[i] = [ currentEnd,
+                    _vectorSum( assignedWeight, weight ) ]
+            i += 1
+        assignedWeight = self._weights[i][1]
+        self._weights.insert(
+                i, [ end, _vectorSum( assignedWeight, weight ) ] )
+        #TODO
+        pass
 
     def append(self):
         """
@@ -166,7 +240,7 @@ if __name__ == "__main__":
     w = Weights( [
         ( 2, [1,2,3] ),
         ( 3, [4,5,6] ),
-        ( 2, [4,5,6] ),
+        ( 2, [3,4,5] ),
         ( 3, [2,3,4] ),
         ( 3, [1,2,3] ) ] )
     print( w.detail() )
