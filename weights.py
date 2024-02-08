@@ -40,11 +40,12 @@ class Weights:
                     raise WeightDimensionError( self._dim, len(weight) )
             total += width
             self._weights.append( [ total, weight ] )
-        self._total = total
+        self._intervalLength = total
 
     def __str__(self):
-        return ( "A map from {{ 1, ..., {} }} ".format( self._total ) +
-                "to weight vectors of dimension {}".format( self._dim ) )
+        return ( "A map from {{ 1, ..., {} }} ".format(
+            self._intervalLength ) +
+            "to weight vectors of dimension {}".format( self._dim ) )
 
     def __repr__(self):
         # Reconstruct the data needed to build this map from scratch.
@@ -73,6 +74,47 @@ class Weights:
                     start, end, weight )
             start = end + 1
         return msg
+
+    def dimension(self):
+        """
+        Returns the dimension of the vectors in the image of this weight
+        mapping.
+        """
+        return self._dim
+
+    def intervalLength(self):
+        """
+        Returns the interval length N of this weight mapping.
+        """
+        return self._intervalLength
+
+    def setZero( self, start, width ):
+        """
+        Sets the weights on the interval [start,end] to zero, where
+        end = start + width - 1.
+
+        Pre-condition:
+        --> end <= self.intervalLength().
+        """
+        end = start + width - 1
+        zero = [0] * self.dimension()
+        previousEnd = 0
+        for i in range( len( self._weights ) ):
+            currentEnd, currentWeight = self._weights[i]
+            if start <= currentEnd:
+                break
+            else:
+                previousEnd = currentEnd
+
+        #TODO
+        #
+        if start == previousEnd + 1:
+            self._weights.pop(i)
+        else:
+            self._weights[i][0] = start - 1
+            i += 1
+        #TODO
+        pass
 
     def append(self):
         """
