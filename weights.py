@@ -242,7 +242,6 @@ class Weights:
             else:
                 self._weights.insert( i, [ end, zero ] )
 
-    #TODO Test that this routine works correctly.
     def addWeight( self, weight, start, width ):
         """
         Adds the given weight to the image of each element of the interval
@@ -264,9 +263,8 @@ class Weights:
             return
         end = start + width - 1
 
-        # In O(m)-time, find the subintervals [p,q] and [pp,qq] that contain
-        # start and end, respectively.
-        i, p, q, w = self._findSubinterval(start)
+        # In O(m)-time, find the subinterval [p,q] that contains start.
+        i, p, q, assignedWeight = self._findSubinterval(start)
 
         # Handle the weights immediately preceding the interval [start,end].
         #TODO In the worst case, this step requires O(m)-time, since it might
@@ -287,7 +285,7 @@ class Weights:
             # should remain as the original assignedWeight (i.e., we do not
             # need to add the given weight to it). We keep track of this by
             # inserting a new subinterval.
-            self._weights.insert( i, [ start - 1, w ] )
+            self._weights.insert( i, [ start - 1, assignedWeight ] )
             i += 1
 
         # For each subinterval lying entirely inside [start,end], adding the
