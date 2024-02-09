@@ -76,6 +76,9 @@ class Weights:
             data.append( ( width, weight ) )
         return "Weights( {} )".format( repr(data) )
 
+    def __eq__( self, other ):
+        return self._weights == other._weights
+
     def detail(self):
         """
         Returns a detailed text representation of this weight mapping.
@@ -176,7 +179,7 @@ class Weights:
         # now be assigned zero weight.
         # This loop is O(m^2)-time because each pop requires O(m)-time. With
         # a linked list, this loop could be improved to O(m)-time.
-        while end >= self._weights[i][0]:
+        while i < self.countSubintervals() and end >= self._weights[i][0]:
             self._weights.pop(i)
 
         # Finish by setting the weight on [start,end] to zero. How this is
@@ -185,7 +188,7 @@ class Weights:
         #TODO In the worst case, this last step requires O(m)-time, since it
         #   might involve either a pop or an insertion operation. With a
         #   linked list, this could be improved to O(1)-time.
-        if self._weights[i][1] == zero:
+        if i < self.countSubintervals() and self._weights[i][1] == zero:
             # In this case, we already have a subinterval S with zero weight,
             # so there is no need to create a new such subinterval. If S is
             # already preceded by a subinterval R with zero weight, then we
