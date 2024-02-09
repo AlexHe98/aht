@@ -50,7 +50,40 @@ def testWeights():
             raise RuntimeError( "FAILED." )
         if ( weights == Weights(data) ) != isUnchanged:
             raise RuntimeError( "FAILED." )
+        print( "    ----------------------------------------------------" )
         print()
+
+    # Test Weights.addWeight().
+    print( "============================================================" )
+    print( " Weights.addWeight() " )
+    print( "------------------------------------------------------------" )
+    print()
+    addWeightTestData = [
+            ( 3, [1,2,3] ),
+            ( 4, [3,3,3] ),
+            ( 5, [1,1,1] ),
+            ( 4, [3,3,3] ) ]
+    addWeightTestCases = [
+            [ addWeightTestData, [1,2,3], 5, 5, 6 ],
+            [ addWeightTestData, [1,2,3], 2, 8, 6 ],
+            [ addWeightTestData, [1,2,3], 9, 3, 6 ],
+            [ addWeightTestData, [1,2,3], 1, 14, 5 ],
+            [ addWeightTestData, [1,2,3], 3, 10, 5 ],
+            [ addWeightTestData, [2,2,2], 9, 4, 4 ],
+            [ addWeightTestData, [2,2,2], 8, 9, 3 ],
+            [ addWeightTestData, [2,2,2], 8, 5, 2 ] ]
+    for data, summand, start, width, subintervals in addWeightTestCases:
+        weights = Weights(data)
+        end = start + width - 1
+        print( weights.detail() )
+        msg = "    Add {} to [{}, {}].".format( summand, start, end )
+        print(msg)
+        print( "    {}".format( "-" * ( len(msg) - 4 ) ) )
+        print()
+        weights.addWeight( summand, start, width )
+        print( weights.detail() )
+        if weights.countSubintervals() != subintervals:
+            raise RuntimeError( "FAILED." )
         print( "    ----------------------------------------------------" )
         print()
     #TODO
