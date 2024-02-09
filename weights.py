@@ -17,6 +17,17 @@ class Weights:
     """
     A map assigning weight vectors to each element of { 1, ..., N }, for some
     positive integer N.
+
+    Such a weight mapping is specified by partitioning { 1, ..., N } into
+    subintervals of constant weight. More precisely, we specify the map using
+    a sequence whose elements are of the form:
+        ( [p<i>, p<i+1>-1], w<i> ),
+    where:  --> i runs from 0 to (m - 1);
+            --> p<0> == 1;
+            --> p<m> == N + 1;
+            --> each w<i> is a non-negative integer vector of dimension d,
+                for some constant d, which represents the weight assigned to
+                each element of the subinterval [p<i>, p<i+1>-1].
     """
     def __init__( self, data ):
         """
@@ -116,6 +127,7 @@ class Weights:
         """
         return len( self._weights )
 
+    #TODO Provide the option to begin the search in the middle of the list.
     def _findSubinterval( self, x ):
         """
         Finds i such that the ith subinterval [p,q] contains x, and returns
@@ -136,8 +148,6 @@ class Weights:
             else:
                 previousEnd = currentEnd
 
-    #TODO Test this routine thoroughly, especially in special cases involving
-    #   subintervals that are already set to zero.
     def setZero( self, start, width ):
         """
         Sets the weights on the interval [start,end] to zero, where
@@ -223,24 +233,29 @@ class Weights:
         #TODO
         end = start + width - 1
 
-        # In O(m)-time, find the subinterval [p,q] that contains start.
-        i, p, q, assignedWeight = self._findSubinterval(start)
+        # In O(m)-time, find the subintervals [p,q] and [pp,qq] that contain
+        # start and end, respectively.
+        #TODO Optimise by making this a single loop.
+        i, p, q, w = self._findSubinterval(start)
+        ii, pp, qq, ww = self._findSubinterval(end)
 
         #TODO
         # ...
         if start > p:
-            self._weights.insert( i, [ start - 1, assignedWeight ] )
+            self._weights.insert( i, [ start - 1, w ] )
             i += 1
 
         # ...
-        while end >= self._weights[i][0]:
+        while i < self.countSubintervals() and end >= self._weights[i][0]:
             currentEnd, assignedWeight = self._weights[i]
             self._weights[i] = [ currentEnd,
                     _vectorSum( assignedWeight, weight ) ]
             i += 1
-        assignedWeight = self._weights[i][1]
-        self._weights.insert(
-                i, [ end, _vectorSum( assignedWeight, weight ) ] )
+        #TODO Huh?
+        if i < self.countSubintervals():
+            assignedWeight = self._weights[i][1]
+            self._weights.insert(
+                    i, [ end, _vectorSum( assignedWeight, weight ) ] )
         #TODO
         pass
 
