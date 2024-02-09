@@ -127,26 +127,32 @@ class Weights:
         """
         return len( self._weights )
 
-    #TODO Provide the option to begin the search in the middle of the list.
-    def _findSubinterval( self, x ):
+    def _findSubinterval( self, x, start=0 ):
         """
-        Finds i such that the ith subinterval [p,q] contains x, and returns
-        the tuple (i, p, q, w), where w is the weight assigned to each
-        integer in [p,q].
+        Finds i >= start such that the ith subinterval [p,q] contains x, and
+        returns the tuple (i, p, q, w), where w is the weight assigned to
+        each integer in [p,q].
+
+        This routine returns None if it cannot find the required subinterval.
 
         Let m = self.countSubintervals(). This routine runs in O(m)-time.
 
         Pre-condition:
         --> The parameter x is a positive integer such that
             x <= self.intervalLength().
+        --> The parameter start is a non-negative integer such that
+            start < self.countSubintervals().
         """
         previousEnd = 0
-        for i in range( len( self._weights ) ):
+        for i in range( start, self.countSubintervals() ):
             currentEnd, currentWeight = self._weights[i]
             if x <= currentEnd:
                 return ( i, previousEnd + 1, currentEnd, currentWeight )
             else:
                 previousEnd = currentEnd
+
+        # If we reach this point, then we failed.
+        return None
 
     def setZero( self, start, width ):
         """
@@ -235,9 +241,8 @@ class Weights:
 
         # In O(m)-time, find the subintervals [p,q] and [pp,qq] that contain
         # start and end, respectively.
-        #TODO Optimise by making this a single loop.
         i, p, q, w = self._findSubinterval(start)
-        ii, pp, qq, ww = self._findSubinterval(end)
+        ii, pp, qq, ww = self._findSubinterval( end, i )
 
         #TODO
         # ...
