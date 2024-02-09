@@ -242,7 +242,6 @@ class Weights:
             else:
                 self._weights.insert( i, [ end, zero ] )
 
-    #TODO Test that this routine works correctly.
     def addWeight( self, weight, start, width ):
         """
         Adds the given weight to the image of each element of the interval
