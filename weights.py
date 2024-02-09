@@ -29,9 +29,29 @@ class Weights:
                 for some constant d, which represents the weight assigned to
                 each element of the subinterval [p<i>, p<i+1>-1].
     """
-    #TODO Write some notes on how the list self._weights represents a weight
-    #   mapping, and how operations on self._weights correspond to operations
-    #   on the weight mapping.
+    #NOTE This class encodes each subinterval S of constant weight using a
+    #   two-element list [ x, w ], where:
+    #   --> x is the last element of S; and
+    #   --> w is the weight vector assigned to S.
+    #   This data is all stored in order in a list L, so that we can (for
+    #   instance) recover the first element of the ith subinterval by simply
+    #   adding one to the last element of the (i-1)st subinterval.
+    #NOTE Let m = len(L). A feature of the chosen data structure is that
+    #   insertion and pop operations on L often correspond to useful
+    #   modifications of the weight mapping:
+    #   --> Insertion:
+    #       Let i be in { 0, ..., m - 1 }; let [p,q] denote the ith
+    #       subinterval; and let w denote the weight assigned to [p,q]. For x
+    #       in [p,q-1], inserting the list [ x, ww ] before the ith entry of
+    #       L corresponds to splitting [p,q] into the following subintervals:
+    #       --- [p,x], which is now assigned weight ww; and
+    #       --- [x+1,q], which is still assigned weight w.
+    #   --> Pop:
+    #       Let i be in { 0, ..., m - 2 }; let [p,q] and [pp,qq] denote the
+    #       ith and (i+1)st subintervals, respectively; and let w and ww
+    #       denote the weights assigned to [p,q] and [pp,qq], respectively.
+    #       Popping the ith entry of L corresponds to merging [p,q] and
+    #       [pp,qq] into a single subinterval [p,qq] with weight ww.
     def __init__( self, data ):
         """
         Uses the given data to initialise a map from { 1, ..., N } to weight
