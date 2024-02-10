@@ -22,10 +22,12 @@ class Pairing:
         --> The parameters a, c and width are all positive integers.
         """
         # If necessary, swap a and c to ensure that a <= c.
-        self._a = min(a,c)
-        self._b = self._a + width - 1
-        self._c = max(a,c)
-        self._d = self._c + width - 1
+        if a > c:
+            a, c = c, a
+        self._a = a
+        self._b = a + width - 1
+        self._c = c
+        self._d = c + width - 1
         self._width = width
         self._preserving = preserving
 
@@ -64,6 +66,66 @@ class Pairing:
         Is this pairing a restriction of the identity map?
         """
         return ( self._preserving and self._a == self._c )
+
+    def inDomain( self, start, width=1 ):
+        """
+        Does the interval [start,end], where end = start + width - 1, lie
+        entirely inside the domain of this pairing?
+
+        If no width is supplied, then the default behaviour of this routine
+        is to simply check whether the point start lies inside the domain of
+        this pairing.
+
+        Pre-condition:
+        --> The parameters start and width are both positive integers.
+        """
+        end = start + width - 1
+        return ( start >= self._a and end <= self._b )
+
+    def inRange( self, start, width=1 ):
+        """
+        Does the interval [start,end], where end = start + width - 1, lie
+        entirely inside the range of this pairing?
+
+        If no width is supplied, then the default behaviour of this routine
+        is to simply check whether the point start lies inside the range of
+        this pairing.
+
+        Pre-condition:
+        --> The parameters start and width are both positive integers.
+        """
+        end = start + width - 1
+        return ( start >= self._c and end <= self._d )
+
+    def meetsDomain( self, start, width=1 ):
+        """
+        Does the interval [start,end], where end = start + width - 1, have
+        non-empty intersection with the domain of this pairing?
+
+        If no width is supplied, then the default behaviour of this routine
+        is to simply check whether the point start lies inside the domain of
+        this pairing.
+
+        Pre-condition:
+        --> The parameters start and width are both positive integers.
+        """
+        end = start + width - 1
+        return ( start <= self._b and end >= self._a )
+
+    def meetsRange( self, start, width=1 ):
+        """
+        Does the interval [start,end], where end = start + width - 1, have
+        non-empty intersection with the range of this pairing?
+
+        If no width is supplied, then the default behaviour of this routine
+        is to simply check whether the point start lies inside the range of
+        this pairing.
+
+        Pre-condition:
+        --> The parameters start and width are both positive integers.
+        """
+        end = start + width - 1
+        return ( start <= self._d and end >= self._c )
 
     def period(self):
         """
