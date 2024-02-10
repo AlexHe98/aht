@@ -2,6 +2,7 @@
 Implementation of pairings between subintervals of { 1, ..., N }, for some
 positive integer N.
 """
+from math import gcd
 from orbiterror import *
 
 
@@ -244,7 +245,7 @@ class Pairing:
 
         # Construct the pairing that results from the periodic merger.
         a = min( myInterval[0], yourInterval[0] )
-        c = a + #TODO gcd( myInterval[2], yourInterval[2] )
+        c = a + gcd( myInterval[2], yourInterval[2] )
         width = max( myInterval[1], yourInterval[1] ) - c + 1
         return Pairing( a, c, width )
 
@@ -254,8 +255,3 @@ class Pairing:
         """
         #TODO
         pass
-
-
-if __name__ == "__main__":
-    #TODO Test code.
-    Pairing(1,2,3,True).contract(2,2)

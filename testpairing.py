@@ -14,6 +14,13 @@ def testPairing():
     print( "------------------------------------------------------------" )
     print()
     #TODO
+    try:
+        Pairing(1,2,3,True).contract(2,2)
+    except PairingNotDisjoint as notDisjoint:
+        print( "PairingNotDisjoint: {}".format(notDisjoint) )
+    else:
+        raise RuntimeError( "FAILED." )
+    print()
     # End of test suite.
     print( "PASSED!" )
     return
