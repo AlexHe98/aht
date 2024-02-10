@@ -127,19 +127,24 @@ class Pairing:
         end = start + width - 1
         return ( start <= self._d and end >= self._c )
 
-    def period(self):
+    def periodicInterval(self):
         """
-        Returns the period of this pairing, or 0 if this pairing is not
-        periodic.
+        If this pairing is periodic, then returns details of the
+        corresponding periodic interval; otherwise, returns None.
+
+        Specifically, if this pairing is periodic, then this routine returns
+        a triple ( s, e, p ), where:
+        --> s is the start point;
+        --> e is the end point; and
+        --> p is the period.
         """
         if ( not self._preserving ) or ( self._c > self._b + 1 ):
-            return 0
-
-        # When there is no gap between the domain and range, the period is
-        # given precisely by the translation distance.
-        # (But when the translation distance is 0, the pairing is *not*
-        # considered to be periodic.)
-        return self._c - self._a
+            return None
+        period = self._c - self._a
+        if period == 0:
+            return None
+        else:
+            return ( self._a, self._d, period )
 
     #TODO Separate checking and performing?
     def contract( self, start, width ):
