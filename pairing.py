@@ -146,6 +146,7 @@ class Pairing:
         else:
             return ( self._a, self._d, period )
 
+    #TODO Test this routine.
     #TODO Separate checking and performing?
     def contract( self, start, width ):
         """
@@ -192,6 +193,7 @@ class Pairing:
         #TODO
         pass
 
+    #TODO Test this routine.
     def trim(self):
         """
         If this is an orientation-reversing pairing, then trims this pairing
@@ -206,18 +208,45 @@ class Pairing:
         self._b = ( self._a + self._d - 1 ) // 2
         self._c = ( self._a + self._d + 2 ) // 2
 
+    #TODO Test this routine.
+    #TODO Separate checking and performing?
     def mergeWith( self, other ):
         """
-        Attempts to perform a periodic merger or this pairing with the other
+        Attempts to perform a periodic merger of this pairing with the other
         pairing.
+        
+        In detail, a periodic merger is possible if and only if:
+        --> this pairing and the other pairing are both periodic; and
+        --> the respective periodic intervals R and RR have "sufficient"
+            overlap.
+        More precisely, letting t and tt denote the periods of R and RR,
+        respectively, the overlap is "sufficient" if its width is at least
+        (t + tt).
 
-        In detail, if this pairing and the other pairing are both periodic,
-        then this routins merges these two pairings, and returns the new
-        periodic pairing that results from this merger; otherwise, this
-        routine does nothing, and returns None.
+        When the above conditions are satisfied, the requested periodic
+        merger produces a new periodic pairing P whose period is given by
+        gcd(t,tt) and whose periodic interval is given by the union of R and
+        RR. If a periodic merger is possible, then this routine returns the
+        new pairing P; otherwise, this routine returns None.
         """
-        #TODO
-        pass
+        myInterval = self.periodicInterval()
+        if myInterval is None:
+            return None
+        yourInterval = other.periodicInterval()
+        if yourInterval is None:
+            return None
+
+        # Do the two periodic intervals have sufficient overlap?
+        overlapWidth = ( min( myInterval[1], yourinterval[1] ) -
+                max( myInterval[0], yourInterval[0] ) )
+        if overlapWidth < myInterval[2] + yourInterval[2]:
+            return None
+
+        # Construct the pairing that results from the periodic merger.
+        a = min( myInterval[0], yourInterval[0] )
+        c = a + #TODO gcd( myInterval[2], yourInterval[2] )
+        width = max( myInterval[1], yourInterval[1] ) - c + 1
+        return Pairing( a, c, width )
 
     def transmitBy( self, other ):
         """
