@@ -17,18 +17,6 @@ class PairingError(OrbitError):
     pass
 
 
-class PairingNotDisjoint(PairingError):
-    """
-    Raised when attempting to perform an operation on an interval that is
-    supposed to be (but isn't) disjoint from a pairing (or collection of
-    pairings).
-    """
-    def __init__( self, pairing, start, width ):
-        msg = "{} is not disjoint from [{},{}].".format(
-                pairing, start, start+width-1 )
-        super().__init__(msg)
-
-
 class WeightError(OrbitError):
     """
     Raised when there is an error with a weight mapping.

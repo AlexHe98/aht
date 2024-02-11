@@ -2,7 +2,6 @@
 Test suite for the Pairing class.
 """
 from pairing import Pairing
-from orbiterror import PairingNotDisjoint
 
 
 def testPairing():
@@ -14,11 +13,8 @@ def testPairing():
     print( "------------------------------------------------------------" )
     print()
     #TODO
-    try:
-        Pairing(1,2,3,True).contract(2,2)
-    except PairingNotDisjoint as notDisjoint:
-        print( "PairingNotDisjoint: {}".format(notDisjoint) )
-    else:
+    if Pairing(1,2,3,True).contract(2,2):
+        # This contraction should be illegal.
         raise RuntimeError( "FAILED." )
     print()
     # End of test suite.

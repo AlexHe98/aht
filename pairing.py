@@ -148,17 +148,26 @@ class Pairing:
             return ( self._a, self._d, period )
 
     #TODO Test this routine.
-    #TODO Separate checking and performing?
     def contract( self, start, width ):
         """
         Attempts to contract the interval [start,end], where
-        end = start+width-1.
+        end = start + width - 1.
 
-        Raises PairingNotDisjoint if the interval [start,end] is not disjoint
-        from the domain and range of this pairing.
+        Such a contraction is legal if and only if [start,end] is disjoint
+        from both the domain and the range of this pairing. Performing the
+        contraction leaves points to the left of [start,end] untouched, and
+        modifies this pairing by subtracting width from points to the right of
+        [start,end].
 
         Pre-condition:
         --> The parameters start and width are both positive integers.
+
+        Parameters:
+        --> start   The start point of the interval to contract.
+        --> width   The width of the interval to contract.
+
+        Returns:
+            True if and only if the contraction is legal.
         """
         end = start + width - 1
 
@@ -169,7 +178,7 @@ class Pairing:
             shiftDom = True
         elif start <= self._b:
             # Not disjoint from domain!
-            raise PairingNotDisjoint( self, start, width )
+            return False
 
         # For range: test disjointness, and shift if necessary.
         shiftRan = False
@@ -178,15 +187,16 @@ class Pairing:
             shiftRan = True
         elif start <= self._d:
             # Not disjoint from range!
-            raise PairingNotDisjoint( self, start, width )
+            return False
 
-        # Perform shifts.
+        # Contraction is legal. Shift points to the right of [start,end].
         if shiftDom:
             self._a -= width
             self._b -= width
         if shiftRan:
             self._c -= width
             self._d -= width
+        return True
 
     def truncate( self, newBound ):
         """
