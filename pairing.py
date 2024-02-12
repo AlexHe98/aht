@@ -147,6 +147,55 @@ class Pairing:
         else:
             return ( self._a, self._d, period )
 
+    def _contractImpl( self, start, width ):
+        """
+        Provides instructions on how to contract the interval [start,end],
+        where end = start + width - 1.
+
+        This is a helper routine for Pairing.contract( start, width ). See
+        the documentation of the main routine for a description of the
+        contraction operation.
+
+        If the requested contraction is legal, then this routine returns a
+        pair (d,r), where:
+        --> d is True if and only if the domain of this pairing needs to be
+            shifted as part of the contraction; and
+        --> r is True if and only if the range of this pairing needs to be
+            shifted as part of the contraction.
+        Otherwise, this routine returns None.
+
+        Pre-condition:
+        --> The parameters start and width are both positive integers.
+        """
+        end = start + width - 1
+        if end < self._a:
+            return ( True, True )
+        elif start > self._b and end < self._c :
+            return ( False, True )
+        elif start > self._d:
+            return ( False, False )
+        else:
+            return None
+
+    def isDisjointFrom( self, start, width ):
+        """
+        Are the domain and range of this pairing both disjoint from the
+        interval [start,end], where end = start + width - 1?
+
+        Pre-condition:
+        --> The parameters start and width are both positive integers.
+
+        Parameters:
+        --> start   The start point of the interval on which to test
+                    disjointness.
+        --> width   The width of the interval on which to test disjointness.
+
+        Returns:
+            True if and only if [start,end] is disjoint from both the domain
+            and range of this pairing.
+        """
+        return ( self._contractImpl( start, width ) is not None )
+
     #TODO Test this routine.
     def contract( self, start, width ):
         """
@@ -169,27 +218,12 @@ class Pairing:
         Returns:
             True if and only if the contraction is legal.
         """
-        end = start + width - 1
-
-        # For domain: test disjointness, and shift if necessary.
-        shiftDom = False
-        if end < self._a:
-            # Need to shift domain.
-            shiftDom = True
-        elif start <= self._b:
-            # Not disjoint from domain!
+        instructions = self._contractImpl( start, width )
+        if instructions is None:
             return False
 
-        # For range: test disjointness, and shift if necessary.
-        shiftRan = False
-        if end < self._c:
-            # Need to shift range.
-            shiftRan = True
-        elif start <= self._d:
-            # Not disjoint from range!
-            return False
-
-        # Contraction is legal. Shift points to the right of [start,end].
+        # The contraction is legal, so perform it.
+        shiftDom, shiftRan = instructions
         if shiftDom:
             self._a -= width
             self._b -= width
