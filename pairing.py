@@ -44,6 +44,12 @@ class Pairing:
         return "Pairing({},{},{},{})".format(
                 self._a, self._c, self._width, self._preserving )
 
+    def __eq__( self, other ):
+        return ( self._a == other._a and
+                self._c == other._c and
+                self._width == other._width and
+                self._preserving == other._preserving )
+
     def width(self):
         """
         Returns the width of this pairing.
