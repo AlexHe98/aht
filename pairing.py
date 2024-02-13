@@ -50,6 +50,12 @@ class Pairing:
                 self._width == other._width and
                 self._preserving == other._preserving )
 
+    def clone(self):
+        """
+        Returns a clone of this pairing.
+        """
+        return Pairing( self._a, self._c, self._width, self._preserving )
+
     def width(self):
         """
         Returns the width of this pairing.
@@ -202,7 +208,6 @@ class Pairing:
         """
         return ( self._contractImpl( start, width ) is not None )
 
-    #TODO Test this routine.
     def contract( self, start, width ):
         """
         Attempts to contract the interval [start,end], where

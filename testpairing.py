@@ -12,29 +12,32 @@ def testPairing():
     print( " Pairing.contract() " )
     print( "------------------------------------------------------------" )
     print()
+    preserve = Pairing( 7, 3, 2, True )
+    reverse = Pairing( 7, 3, 2, False )
     contractTestCases = [
-            [ 3, 7, 2, True, 1, 2, True ],
-            [ 3, 7, 2, False, 5, 2, True ],
-            [ 3, 7, 2, True, 9, 2, True ],
-            [ 3, 7, 2, False, 2, 2, False ],
-            [ 3, 7, 2, True, 4, 2, False ],
-            [ 3, 7, 2, False, 2, 4, False ],
-            [ 3, 7, 2, True, 6, 3, False ],
-            [ 3, 7, 2, False, 7, 3, False ],
-            [ 3, 7, 2, True, 7, 2, False ],
-            [ 3, 7, 2, False, 3, 7, False ],
-            [ 1, 2, 3, True, 2, 2, False ] ]
-    for a, c, pWidth, preserving, cStart, cWidth, legal in contractTestCases:
-        pairing = Pairing( a, c, pWidth, preserving )
-        msg = "{}. Contracting [{},{}] is ".format(
-                pairing, cStart, cStart + cWidth - 1 )
-        if legal:
-            msg += "legal."
+            [ preserve.clone(), 1, 2, Pairing( 1, 5, 2, True ) ],
+            [ reverse.clone(), 5, 2, Pairing( 3, 5, 2, False ) ],
+            [ preserve.clone(), 9, 2, preserve ],
+            [ reverse.clone(), 2, 2, None ],
+            [ preserve.clone(), 4, 2, None ],
+            [ reverse.clone(), 2, 4, None ],
+            [ preserve.clone(), 6, 3, None ],
+            [ reverse.clone(), 7, 3, None ],
+            [ preserve.clone(), 7, 2, None ],
+            [ reverse.clone(), 3, 7, None ],
+            [ Pairing( 1, 2, 3, True ), 2, 2, None ] ]
+    for oldPairing, start, width, newPairing in contractTestCases:
+        msg = "{}\n    Contracting [{},{}] should ".format(
+                oldPairing, start, start + width - 1 )
+        if newPairing is None:
+            print( msg + "be illegal." )
+            if oldPairing.contract( start, width ):
+                raise RuntimeError( "FAILED." )
         else:
-            msg += "illegal."
-        print(msg)
-        if pairing.contract( cStart, cWidth ) != legal:
-            raise RuntimeError( "FAILED." )
+            print( msg + "should yield:\n        {}.".format(newPairing) )
+            if ( not oldPairing.contract( start, width ) or
+                    oldPairing != newPairing ):
+                raise RuntimeError( "FAILED." )
         print()
     # End of test suite.
     print( "PASSED!" )
