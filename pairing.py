@@ -45,10 +45,10 @@ class Pairing:
                 self._a, self._c, self._width, self._preserving )
 
     def __eq__( self, other ):
-        return ( self._a == other._a and
-                self._c == other._c and
-                self._width == other._width and
-                self._preserving == other._preserving )
+        return ( ( self._a == other._a ) and
+                ( self._c == other._c ) and
+                ( self._width == other._width ) and
+                ( self._preserving == other._preserving ) )
 
     def clone(self):
         """
@@ -249,20 +249,23 @@ class Pairing:
         #TODO
         pass
 
-    #TODO Test this routine.
     def trim(self):
         """
-        If this is an orientation-reversing pairing, then trims this pairing
-        to ensure that the domain and range are disjoint.
+        If this pairing is orientation-reversing, then trims this pairing to
+        ensure that the domain and range are disjoint.
 
-        This routine does nothing if this pairing is orientation-preserving.
+        This routine returns True if and only if it modifies this pairing.
+        Thus, if this pairing is orientation-preserving, or if its domain and
+        range are already disjoint, then this routine does nothing other than
+        return False.
         """
         if self._preserving or self._b < self._c:
-            return
-        # This ensures that b is strictly less than the average of a and d,
-        # and c is strictly greater than the average.
+            return False
+        # Ensure that b is strictly less than the average of a and d, and
+        # that c is strictly greater than the average.
         self._b = ( self._a + self._d - 1 ) // 2
         self._c = ( self._a + self._d + 2 ) // 2
+        return True
 
     #TODO Test this routine.
     #TODO Separate checking and performing?

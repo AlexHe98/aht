@@ -39,6 +39,33 @@ def testPairing():
                     oldPairing != newPairing ):
                 raise RuntimeError( "FAILED." )
         print()
+
+    # Test Pairing.trim().
+    print( "============================================================" )
+    print( " Pairing.trim() " )
+    print( "------------------------------------------------------------" )
+    print()
+    preserve = Pairing( 2, 4, 5, True )
+    touching = Pairing( 2, 5, 3, False )
+    apart = Pairing( 2, 6, 3, False )
+    odd = Pairing( 2, 4, 5, False )
+    even = Pairing( 2, 4, 6, False )
+    trimTestCases = [
+            [ preserve.clone(), False, preserve ],
+            [ touching.clone(), False, touching ],
+            [ apart.clone(), False, apart ],
+            [ odd.clone(), True, Pairing( 2, 6, 3, False ) ],
+            [ even, True, Pairing( 2, 6, 4, False ) ] ]
+    for me, change, you in trimTestCases:
+        msg = "{}\n    Trimming should ".format(me)
+        if change:
+            print( msg + "yield:\n        {}.".format(you) )
+        else:
+            print( msg + "do nothing." )
+        if ( me.trim() != change ) or ( me != you ):
+            print(me, you)
+            raise RuntimeError( "FAILED." )
+        print()
     # End of test suite.
     print( "PASSED!" )
     return
