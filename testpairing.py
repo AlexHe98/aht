@@ -7,6 +7,35 @@ from pairing import Pairing
 def testPairing():
     print()
 
+    # Test Pairing.__eq__().
+    print( "============================================================" )
+    print( " Pairing.__eq__() " )
+    print( "------------------------------------------------------------" )
+    print()
+    preserve0 = Pairing( 1, 2, 3, True )
+    reverse0 = Pairing( 1, 2, 3, False )
+    preserve1 = Pairing( 4, 3, 2, True )
+    reverse1 = Pairing( 4, 3, 2, False )
+    eqTestCases = [
+            [ preserve0, preserve0.clone(), True ],
+            [ preserve0, reverse0, False ],
+            [ preserve0, preserve1, False ],
+            [ reverse0, reverse0.clone(), True ],
+            [ reverse0, reverse1, False ],
+            [ preserve1, preserve1.clone(), True ],
+            [ preserve1, reverse1, False ],
+            [ reverse1, reverse1.clone(), True ] ]
+    for me, you, eq in eqTestCases:
+        msg = "{}\n    Should ".format(me)
+        if eq:
+            msg += "be equal to:\n"
+        else:
+            msg += "not be equal to:\n"
+        print( msg + "        {}".format(you) )
+        if ( me == you ) != eq:
+            raise RuntimeError( "FAILED." )
+        print()
+
     # Test Pairing.contract().
     print( "============================================================" )
     print( " Pairing.contract() " )
@@ -55,7 +84,7 @@ def testPairing():
             [ touching.clone(), False, touching ],
             [ apart.clone(), False, apart ],
             [ odd.clone(), True, Pairing( 2, 6, 3, False ) ],
-            [ even, True, Pairing( 2, 6, 4, False ) ] ]
+            [ even.clone(), True, Pairing( 2, 6, 4, False ) ] ]
     for me, change, you in trimTestCases:
         msg = "{}\n    Trimming should ".format(me)
         if change:
