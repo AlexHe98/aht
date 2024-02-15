@@ -29,7 +29,6 @@ class Pairing:
         self._b = a + width - 1
         self._c = c
         self._d = c + width - 1
-        self._width = width
         self._preserving = preserving
 
     def __str__(self):
@@ -42,25 +41,25 @@ class Pairing:
 
     def __repr__(self):
         return "Pairing({},{},{},{})".format(
-                self._a, self._c, self._width, self._preserving )
+                self._a, self._c, self.width(), self._preserving )
 
     def __eq__( self, other ):
         return ( ( self._a == other._a ) and
                 ( self._c == other._c ) and
-                ( self._width == other._width ) and
+                ( self.width() == other.width() ) and
                 ( self._preserving == other._preserving ) )
 
     def clone(self):
         """
         Returns a clone of this pairing.
         """
-        return Pairing( self._a, self._c, self._width, self._preserving )
+        return Pairing( self._a, self._c, self.width(), self._preserving )
 
     def width(self):
         """
         Returns the width of this pairing.
         """
-        return self._width
+        return self._b - self._a + 1
 
     def isOrientationPreserving(self):
         """

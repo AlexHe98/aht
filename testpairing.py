@@ -92,7 +92,16 @@ def testPairing():
         else:
             print( msg + "do nothing." )
         if ( me.trim() != change ) or ( me != you ):
-            print(me, you)
+            print(me)
+            print( "    {}".format( me._a ) )
+            print( "    {}".format( me._c ) )
+            print( "    {}".format( me.width() ) )
+            print( "    {}".format( me._preserving ) )
+            print(you)
+            print( "    {}".format( you._a ) )
+            print( "    {}".format( you._c ) )
+            print( "    {}".format( you.width() ) )
+            print( "    {}".format( you._preserving ) )
             raise RuntimeError( "FAILED." )
         print()
     # End of test suite.
