@@ -6,6 +6,22 @@ from math import gcd
 from orbiterror import *
 
 
+#TODO Test this routine.
+def periodicPairing( start, end, period ):
+    """
+    Constructs a periodic pairing of the given period such that the periodic
+    interval is given by [start,end].
+
+    Pre-condition:
+    --> The parameters start and end are positive integers such that
+        start < end.
+    --> The period parameter is a positive integer such that
+        period <= (end - start + 3) // 2.
+    """
+    c = start + period
+    return Pairing( start, c, end - c + 1, True )
+
+
 class Pairing:
     """
     A pairing between two subintervals of { 1, ..., N }, for some positive
@@ -301,10 +317,10 @@ class Pairing:
             return None
 
         # Construct the pairing that results from the periodic merger.
-        a = min( myInterval[0], yourInterval[0] )
-        c = a + gcd( myInterval[2], yourInterval[2] )
-        width = max( myInterval[1], yourInterval[1] ) - c + 1
-        return Pairing( a, c, width )
+        start = min( myInterval[0], yourInterval[0] )
+        end = max( myInterval[1], yourInterval[1] )
+        period = gcd( myInterval[2], yourInterval[2] )
+        return periodicPairing( start, end, period )
 
     def transmitBy( self, other ):
         """
