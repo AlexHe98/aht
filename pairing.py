@@ -18,6 +18,7 @@ def periodicPairing( start, end, period ):
     --> The period parameter is a positive integer such that
         period <= (end - start + 3) // 2.
     """
+    #TODO Fix pre-condition on the period.
     c = start + period
     return Pairing( start, c, end - c + 1, True )
 
