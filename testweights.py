@@ -7,9 +7,9 @@ from weights import Weights
 def testWeights():
     print()
 
-    # Test Weights.setZero().
+    #######################################################################
     print( "============================================================" )
-    print( " Weights.setZero() " )
+    print( " Weights.setZero( start, width ) " )
     print( "------------------------------------------------------------" )
     print()
     woutZeros = [
@@ -53,9 +53,9 @@ def testWeights():
         print( "    ----------------------------------------------------" )
         print()
 
-    # Test Weights.addWeight().
+    #######################################################################
     print( "============================================================" )
-    print( " Weights.addWeight() " )
+    print( " Weights.addWeight( weight, start, width ) " )
     print( "------------------------------------------------------------" )
     print()
     addWeightTestData = [

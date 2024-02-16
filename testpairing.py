@@ -7,9 +7,9 @@ from pairing import Pairing
 def testPairing():
     print()
 
-    # Test Pairing.__eq__().
+    #######################################################################
     print( "============================================================" )
-    print( " Pairing.__eq__() " )
+    print( " Pairing.__eq__(other) " )
     print( "------------------------------------------------------------" )
     print()
     preserve0 = Pairing( 1, 2, 3, True )
@@ -36,9 +36,9 @@ def testPairing():
             raise RuntimeError( "FAILED." )
         print()
 
-    # Test Pairing.contract().
+    #######################################################################
     print( "============================================================" )
-    print( " Pairing.contract() " )
+    print( " Pairing.contract( start, width ) " )
     print( "------------------------------------------------------------" )
     print()
     preserve = Pairing( 7, 3, 2, True )
@@ -69,7 +69,7 @@ def testPairing():
                 raise RuntimeError( "FAILED." )
         print()
 
-    # Test Pairing.trim().
+    #######################################################################
     print( "============================================================" )
     print( " Pairing.trim() " )
     print( "------------------------------------------------------------" )
