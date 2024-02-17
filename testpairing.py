@@ -17,16 +17,26 @@ def testPairing():
             [ 2, 8, 3, Pairing( 2, 5, 4, True ) ],
             [ 3, 10, 3, Pairing( 3, 6, 5, True ) ],
             [ 4, 12, 3, Pairing( 4, 7, 6, True ) ],
-            [ 5, 14, 3, Pairing( 5, 8, 7, True ) ]]
+            [ 5, 14, 3, Pairing( 5, 8, 7, True ) ],
+            [ 6, 12, 4, None ],
+            [ 7, 14, 5, None ] ]
     for start, end, period, expected in periodicPairingTestCases:
-        print( "Period {} on [{}, {}] should be equivalent to:".format(
-            period, start, end ) )
-        print( "    {}".format(expected) )
+        msg = "Period {} on [{}, {}] should be ".format(
+                period, start, end )
         constructed = periodicPairing( start, end, period )
-        if ( constructed != expected or
-                constructed.periodicInterval() != ( start, end, period ) ):
-            print(constructed)
-            raise RuntimeError( "FAILED." )
+        if expected is None:
+            msg += "impossible."
+            print(msg)
+            if constructed is not None:
+                raise RuntimeError( "FAILED." )
+        else:
+            msg += "equivalent to:\n    {}".format(expected)
+            print(msg)
+            perInt = ( start, end, period )
+            if ( constructed != expected or
+                    constructed.periodicInterval() != perInt ):
+                print(constructed)
+                raise RuntimeError( "FAILED." )
         print()
 
     #######################################################################

@@ -6,19 +6,24 @@ from math import gcd
 from orbiterror import *
 
 
-#TODO Test this routine.
 def periodicPairing( start, end, period ):
     """
-    Constructs a periodic pairing of the given period such that the periodic
-    interval is given by [start,end].
+    Attempts to construct a periodic pairing of the given period such that
+    the periodic interval is given by [start,end].
+
+    Such a periodic pairing exists if and only if the given parameters
+    satisfy the following inequality:
+        period <= (end - start + 1) // 2.
+    When such a periodic pairing exists, it is unique, and this routine
+    returns this uniquely determined pairing; otherwise, this routine returns
+    None.
 
     Pre-condition:
     --> The parameters start and end are positive integers such that
         start < end.
-    --> The period parameter is a positive integer such that
-        period <= (end - start + 3) // 2.
     """
-    #TODO Fix pre-condition on the period.
+    if period > (end - start + 1) // 2:
+        return None
     c = start + period
     return Pairing( start, c, end - c + 1, True )
 
