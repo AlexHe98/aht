@@ -288,7 +288,6 @@ class Pairing:
         self._c = ( self._a + self._d + 2 ) // 2
         return True
 
-    #TODO Test this routine.
     def mergeWith( self, other ):
         """
         Attempts to perform a periodic merger of this pairing with the other
