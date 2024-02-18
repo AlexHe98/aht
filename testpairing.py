@@ -30,7 +30,7 @@ def testPairing():
             if constructed is not None:
                 raise RuntimeError( "FAILED." )
         else:
-            msg += "equivalent to:\n    {}".format(expected)
+            msg += "equivalent to:\n    {}.".format(expected)
             print(msg)
             perInt = ( start, end, period )
             if ( constructed != expected or
@@ -63,7 +63,7 @@ def testPairing():
             msg += "be equal to:\n"
         else:
             msg += "not be equal to:\n"
-        print( msg + "        {}".format(you) )
+        print( msg + "        {}.".format(you) )
         if ( me == you ) != eq:
             raise RuntimeError( "FAILED." )
         print()
@@ -99,6 +99,33 @@ def testPairing():
             if ( not oldPairing.contract( start, width ) or
                     oldPairing != newPairing ):
                 raise RuntimeError( "FAILED." )
+        print()
+
+    #######################################################################
+    print( "============================================================" )
+    print( " Pairing.truncate(newBound) " )
+    print( "------------------------------------------------------------" )
+    print()
+    preserve = Pairing( 2, 5, 7, True )
+    reverse = Pairing( 1, 7, 6, False )
+    overlap = Pairing( 2, 5, 7, False )
+    truncateTestCases = [
+            [ preserve.clone(), 4, False, preserve ],
+            [ reverse.clone(), 12, False, reverse ],
+            [ preserve.clone(), 8, True, Pairing( 2, 5, 4, True ) ],
+            [ overlap.clone(), 8, False, overlap ],
+            [ reverse.clone(), 9, True, Pairing( 4, 7, 3, False ) ] ]
+    for oldPairing, newBound, change, newPairing in truncateTestCases:
+        msg = "{}\n    Truncating to {} should ".format(
+                oldPairing, newBound )
+        if change:
+            print( msg + "yield:\n        {}.".format(newPairing) )
+        else:
+            print( msg + "do nothing." )
+        if ( oldPairing.truncate(newBound) != change or
+                oldPairing != newPairing ):
+            print(oldPairing)
+            raise RuntimeError( "FAILED." )
         print()
 
     #######################################################################
@@ -164,7 +191,7 @@ def testPairing():
             if constructed is not None:
                 raise RuntimeError( "FAILED." )
         else:
-            msg += "yield:\n    {}".format(expected)
+            msg += "yield:\n    {}.".format(expected)
             print(msg)
             if constructed != expected:
                 print(constructed)
