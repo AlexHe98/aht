@@ -260,19 +260,56 @@ class Pairing:
             self._d -= width
         return True
 
+    #TODO Test this routine.
     def truncate( self, newBound ):
         """
-        Truncates the range of this pairing.
+        Attempts to truncate the range of this pairing.
 
         The specific effect of truncation depends on whether this pairing is
         orientation-preserving or orientation-reversing:
         --> Orientation-preserving:
-            TODO
+            In this case, truncation is possible if and only if the given
+            newBound satisfies c <= newBound < d, where [c,d] is the range of
+            this pairing. When truncation is possible, this routine performs
+            the truncation by:
+            --- shortening the domain of this pairing from [a,b] to [a,b'],
+                where b' = b - (d - newBound); and
+            --- shortening the range of this pairing from [c,d] to
+                [c,newBound].
         --> Orientation-reversing:
-            TODO
+            In this case, truncation is possible if and only if:
+            --- the domain and range of this pairing are disjoint; and
+            --- the given newBound satisfies c <= newBound < d, where [c,d]
+                is the range of this pairing.
+            When truncation is possible, this routine performs the truncation
+            by:
+            --- shortening the domain of this pairing from [a,b] to [a',b],
+                where a' = a + d - newBound; and
+            --- shortening the range of this pairing from [c,d] to
+                [c,newBound].
+
+        Pre-condition:
+        --> The parameter newBound is a positive integer.
+
+        Parameters:
+        --> newBound    The new upper bound for the range of this pairing
+                        after performing the truncation.
+
+        Returns:
+            True if and only if the truncation is legal.
         """
-        #TODO
-        pass
+        if newBound < self._c or newBound >= self._d:
+            return False
+        if self.isOrientationPreserving():
+            self._b = self._b - ( self._d - newBound )
+            self._d = newBound
+            return True
+        else:
+            if self._c <= self._b:
+                return False
+            self._a = self._a + self._d - newBound
+            self._d = newBound
+            return True
 
     def trim(self):
         """
