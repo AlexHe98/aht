@@ -101,14 +101,13 @@ class Pairing:
         """
         return ( self._preserving and self._a == self._c )
 
-    def inDomain( self, start, width=1 ):
+    def domainContains( self, start, width=1 ):
         """
-        Does the interval [start,end], where end = start + width - 1, lie
-        entirely inside the domain of this pairing?
+        Does the domain of this pairing contain the interval [start,end],
+        where end = start + width - 1?
 
         If no width is supplied, then the default behaviour of this routine
-        is to simply check whether the point start lies inside the domain of
-        this pairing.
+        is to simply check whether the domain contains the point start.
 
         Pre-condition:
         --> The parameters start and width are both positive integers.
@@ -116,14 +115,13 @@ class Pairing:
         end = start + width - 1
         return ( start >= self._a and end <= self._b )
 
-    def inRange( self, start, width=1 ):
+    def rangeContains( self, start, width=1 ):
         """
-        Does the interval [start,end], where end = start + width - 1, lie
-        entirely inside the range of this pairing?
+        Does the range of this pairing contain the interval [start,end],
+        where, end = start + width - 1?
 
         If no width is supplied, then the default behaviour of this routine
-        is to simply check whether the point start lies inside the range of
-        this pairing.
+        is to simply check whether the range contains the point start.
 
         Pre-condition:
         --> The parameters start and width are both positive integers.
@@ -131,14 +129,13 @@ class Pairing:
         end = start + width - 1
         return ( start >= self._c and end <= self._d )
 
-    def meetsDomain( self, start, width=1 ):
+    def domainMeets( self, start, width=1 ):
         """
-        Does the interval [start,end], where end = start + width - 1, have
-        non-empty intersection with the domain of this pairing?
+        Does the domain of this pairing have non-empty intersection with the
+        interval [start,end], where end = start + width - 1?
 
         If no width is supplied, then the default behaviour of this routine
-        is to simply check whether the point start lies inside the domain of
-        this pairing.
+        is to simply check whether the domain contains the point start.
 
         Pre-condition:
         --> The parameters start and width are both positive integers.
@@ -146,14 +143,13 @@ class Pairing:
         end = start + width - 1
         return ( start <= self._b and end >= self._a )
 
-    def meetsRange( self, start, width=1 ):
+    def rangeMeets( self, start, width=1 ):
         """
-        Does the interval [start,end], where end = start + width - 1, have
-        non-empty intersection with the range of this pairing?
+        Does the range of this pairing have non-empty intersection with the
+        interval [start,end], where end = start + width - 1?
 
         If no width is supplied, then the default behaviour of this routine
-        is to simply check whether the point start lies inside the range of
-        this pairing.
+        is to simply check whether the range contains the point start.
 
         Pre-condition:
         --> The parameters start and width are both positive integers.
@@ -266,6 +262,14 @@ class Pairing:
 
     def truncate( self, newBound ):
         """
+        Truncates the range of this pairing.
+
+        The specific effect of truncation depends on whether this pairing is
+        orientation-preserving or orientation-reversing:
+        --> Orientation-preserving:
+            TODO
+        --> Orientation-reversing:
+            TODO
         """
         #TODO
         pass
