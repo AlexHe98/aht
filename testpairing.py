@@ -171,7 +171,11 @@ def testPairing():
                 raise RuntimeError( "FAILED." )
         print()
     # End of test suite.
-    print( "PASSED!" )
+    print( "============================================================" )
+    print()
+    print( "+---------+" )
+    print( "| PASSED! |" )
+    print( "+---------+" )
     return
 
 

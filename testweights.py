@@ -88,7 +88,11 @@ def testWeights():
         print()
     #TODO
     # End of test suite.
-    print( "PASSED!" )
+    print( "============================================================" )
+    print()
+    print( "+---------+" )
+    print( "| PASSED! |" )
+    print( "+---------+" )
     return
 
 
