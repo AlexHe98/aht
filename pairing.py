@@ -289,7 +289,6 @@ class Pairing:
         return True
 
     #TODO Test this routine.
-    #TODO Separate checking and performing?
     def mergeWith( self, other ):
         """
         Attempts to perform a periodic merger of this pairing with the other
@@ -317,8 +316,9 @@ class Pairing:
             return None
 
         # Do the two periodic intervals have sufficient overlap?
-        overlapWidth = ( min( myInterval[1], yourinterval[1] ) -
-                max( myInterval[0], yourInterval[0] ) )
+        overlapWidth = ( min( myInterval[1], yourInterval[1] )
+                - max( myInterval[0], yourInterval[0] )
+                + 1 )
         if overlapWidth < myInterval[2] + yourInterval[2]:
             return None
 

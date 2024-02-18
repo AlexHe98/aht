@@ -136,6 +136,40 @@ def testPairing():
             print( "    {}".format( you._preserving ) )
             raise RuntimeError( "FAILED." )
         print()
+
+    #######################################################################
+    print( "============================================================" )
+    print( " Pairing.mergeWith(other) " )
+    print( "------------------------------------------------------------" )
+    print()
+    nonPeriodic = Pairing( 2, 6, 3, True )
+    periodic1 = periodicPairing( 1, 6, 3 )
+    periodic2 = periodicPairing( 2, 10, 4 )
+    periodic5 = periodicPairing( 5, 13, 2 )
+    periodic6 = periodicPairing( 6, 19, 6 )
+    periodic7 = periodicPairing( 7, 16, 3 )
+    mergeWithTestCases = [
+            [ nonPeriodic, periodic1, None ],
+            [ periodic1, nonPeriodic, None ],
+            [ periodic1, periodic2, None ],
+            [ periodic2, periodic5, periodicPairing( 2, 13, 2 ) ],
+            [ periodic6, periodic5, periodicPairing( 5, 19, 2 ) ],
+            [ periodic6, periodic7, periodicPairing( 6, 19, 3 ) ] ]
+    for me, you, expected in mergeWithTestCases:
+        msg = "Merge:\n    {}\n    {}\nShould ".format( me, you )
+        constructed = me.mergeWith(you)
+        if expected is None:
+            msg += "be impossible."
+            print(msg)
+            if constructed is not None:
+                raise RuntimeError( "FAILED." )
+        else:
+            msg += "yield:\n    {}".format(expected)
+            print(msg)
+            if constructed != expected:
+                print(constructed)
+                raise RuntimeError( "FAILED." )
+        print()
     # End of test suite.
     print( "PASSED!" )
     return
