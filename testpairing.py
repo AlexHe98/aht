@@ -70,6 +70,37 @@ def testPairing():
 
     #######################################################################
     print( "============================================================" )
+    print( " Pairing.periodicInterval() " )
+    print( "------------------------------------------------------------" )
+    print()
+    nonPeriodic = Pairing( 2, 6, 3, True )
+    periodic1 = periodicPairing( 1, 6, 3 )
+    periodic2 = periodicPairing( 2, 10, 4 )
+    periodic5 = periodicPairing( 5, 13, 2 )
+    periodic6 = periodicPairing( 6, 19, 6 )
+    periodic7 = periodicPairing( 7, 16, 3 )
+    periodicIntervalTestCases = [
+            [ nonPeriodic, () ],
+            [ periodic1, ( 1, 6, 3 ) ],
+            [ periodic2, ( 2, 10, 4 ) ],
+            [ periodic5, ( 5, 13, 2 ) ],
+            [ periodic6, ( 6, 19, 6 ) ],
+            [ periodic7, ( 7, 16, 3 ) ] ]
+    for pairing, periodicInterval in periodicIntervalTestCases:
+        msg = "{}\n    Should ".format(pairing)
+        if periodicInterval:
+            msg += "give periodic interval [{}, {}] with period {}.".format(
+                    *periodicInterval )
+        else:
+            msg += "not be periodic."
+        print(msg)
+        if pairing.periodicInterval() != periodicInterval:
+            print( pairing.periodicInterval() )
+            raise RuntimeError( "FAILED." )
+        print()
+
+    #######################################################################
+    print( "============================================================" )
     print( " Pairing.contract( start, width ) " )
     print( "------------------------------------------------------------" )
     print()

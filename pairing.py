@@ -132,6 +132,8 @@ class Pairing:
         """
         Returns a clone of this pairing.
 
+        The clone does not inherit cached properties of this pairing.
+
         Returns:
             A new pairing that is equal to this one.
         """
@@ -304,7 +306,6 @@ class Pairing:
         end = start + width - 1
         return ( start <= self._d and end >= self._c )
 
-    #TODO Test this routine.
     def periodicInterval(self):
         """
         If this pairing is periodic, then returns details of the
@@ -325,11 +326,12 @@ class Pairing:
         if self._periodicInterval is None:
             if ( not self._preserving ) or ( self._c > self._b + 1 ):
                 self._periodicInterval = ()
-            period = self.translationDistance()
-            if period == 0:
-                self._periodicInterval = ()
             else:
-                self._periodicInterval = ( self._a, self._d, period )
+                period = self.translationDistance()
+                if period == 0:
+                    self._periodicInterval = ()
+                else:
+                    self._periodicInterval = ( self._a, self._d, period )
         return self._periodicInterval
 
     def _contractImpl( self, start, width ):
@@ -552,10 +554,10 @@ class Pairing:
             True if and only if the requested periodic merger is legal.
         """
         myInterval = self.periodicInterval()
-        if myInterval is None:
+        if myInterval == ():
             return False
         yourInterval = other.periodicInterval()
-        if yourInterval is None:
+        if yourInterval == ():
             return False
 
         # Do the two periodic intervals have sufficient overlap?
