@@ -22,6 +22,16 @@ def periodicPairing( start, end, period ):
     --> The parameters start and end are positive integers such that
         start < end.
     --> The period parameter is a positive integer.
+
+    Parameters:
+    --> start   The start point of the periodic interval of the constructed
+                periodic pairing.
+    --> end     The end point of the periodic interval of the constructed
+                periodic pairing.
+    --> period  The period of the constructed periodic pairing.
+
+    Returns
+        The requested periodic pairing, or None if no such pairing exists.
     """
     if period > (end - start + 1) // 2:
         return None
@@ -45,6 +55,14 @@ class Pairing:
 
         Pre-condition:
         --> The parameters a, c and width are all positive integers.
+
+        Parameters:
+        --> a           The start point of the domain (if a <= c) or range
+                        (if a > c) of the constructed pairing.
+        --> c           The start point of the range (if a <= c) or domain
+                        (if a > c) of the constructed pairing.
+        --> width       The width of the constructed pairing.
+        --> preserving  Is the constructed pairing orientation-preserving?
         """
         # If necessary, swap a and c to ensure that a <= c.
         if a > c:
@@ -61,6 +79,17 @@ class Pairing:
 
         Pre-condition:
         --> The parameters a, c and width are all positive integers.
+
+        Parameters:
+        --> a           The start point of the domain of the constructed
+                        pairing.
+        --> c           The start point of the range of the constructed
+                        pairing.
+        --> width       The width of the constructed pairing.
+        --> preserving  Is the constructed pairing orientation-preserving?
+
+        Returns:
+            None
         """
         self._a = a
         self._b = a + width - 1
@@ -94,6 +123,9 @@ class Pairing:
     def clone(self):
         """
         Returns a clone of this pairing.
+
+        Returns:
+            A new pairing that is equal to this one.
         """
         return Pairing( self._a, self._c, self.width(), self._preserving )
 
@@ -107,31 +139,40 @@ class Pairing:
 
     def domainStart(self):
         """
-        Returns the first point in the domain of this pairing.
+        Returns the start point of the domain of this pairing.
         """
         return self._a
 
     def rangeStart(self):
         """
-        Returns the first point in the range of this pairing.
+        Returns the start point of the range of this pairing.
         """
         return self._c
 
     def isOrientationPreserving(self):
         """
         Is this pairing orientation-preserving?
+
+        Returns:
+            True if and only if this Pairing is orientation-preserving.
         """
         return self._preserving
 
     def isOrientationReversing(self):
         """
         Is this pairing orientation-reversing?
+
+        Returns:
+            True if and only if this Pairing is orientation-reversing.
         """
         return ( not self._preserving )
 
     def isIdentity(self):
         """
         Is this pairing a restriction of the identity map?
+
+        Returns:
+            True if and only if this Pairing is an identity map.
         """
         return ( self._preserving and self._a == self._c )
 
@@ -145,6 +186,16 @@ class Pairing:
 
         Pre-condition:
         --> The parameters start and width are both positive integers.
+
+        Parameters:
+        --> start   The start point of the interval to test for containment
+                    in the domain of this pairing.
+        --> width   The width of the interval to test for containment in the
+                    domain of this pairing.
+
+        Returns:
+            True if and only if the interval [start,end] is a subset of the
+            domain of this pairing.
         """
         end = start + width - 1
         return ( start >= self._a and end <= self._b )
@@ -159,6 +210,16 @@ class Pairing:
 
         Pre-condition:
         --> The parameters start and width are both positive integers.
+
+        Parameters:
+        --> start   The start point of the interval to test for containment
+                    in the range of this pairing.
+        --> width   The width of the interval to test for containment in the
+                    range of this pairing.
+
+        Returns:
+            True if and only if the interval [start,end] is a subset of the
+            range of this pairing.
         """
         end = start + width - 1
         return ( start >= self._c and end <= self._d )
@@ -173,6 +234,16 @@ class Pairing:
 
         Pre-condition:
         --> The parameters start and width are both positive integers.
+
+        Parameters:
+        --> start   The start point of the interval to test for non-empty
+                    intersection with the domain of this pairing.
+        --> width   The width of the interval to test for non-empty
+                    intersection with the domain of this pairing.
+
+        Returns:
+            True if and only if the interval [start,end] intersects the
+            domain of this pairing.
         """
         end = start + width - 1
         return ( start <= self._b and end >= self._a )
@@ -187,6 +258,16 @@ class Pairing:
 
         Pre-condition:
         --> The parameters start and width are both positive integers.
+
+        Parameters:
+        --> start   The start point of the interval to test for non-empty
+                    intersection with the range of this pairing.
+        --> width   The width of the interval to test for non-empty
+                    intersection with the range of this pairing.
+
+        Returns:
+            True if and only if the interval [start,end] intersects the range
+            of this pairing.
         """
         end = start + width - 1
         return ( start <= self._d and end >= self._c )
@@ -201,6 +282,9 @@ class Pairing:
         --> s is the start point;
         --> e is the end point; and
         --> p is the period.
+
+        Returns:
+            Data as detailed above.
         """
         if ( not self._preserving ) or ( self._c > self._b + 1 ):
             return None
@@ -229,6 +313,13 @@ class Pairing:
 
         Pre-condition:
         --> The parameters start and width are both positive integers.
+
+        Parameters:
+        --> start   The start point of the interval to contract.
+        --> width   The width of the interval to contract.
+
+        Returns:
+            Data as detailed above.
         """
         end = start + width - 1
         if end < self._a:
@@ -355,6 +446,10 @@ class Pairing:
         Thus, if this pairing is orientation-preserving, or if its domain and
         range are already disjoint, then this routine does nothing other than
         return False.
+
+        Returns
+            True if and only if this pairing was modified by the requested
+            trimming operation.
         """
         if self._preserving or self._b < self._c:
             return False
@@ -379,6 +474,16 @@ class Pairing:
             start < end.
         --> The period parameter is a positive integer such that
             period <= (end - start + 1) // 2.
+
+        Parameters:
+        --> start   The start point of the periodic interval of the
+                    constructed periodic pairing.
+        --> end     The end point of the periodic interval of the constructed
+                    periodic pairing.
+        --> period  The period of the constructed periodic pairing.
+
+        Returns:
+            None
         """
         c = start + period
         self._setPairing( start, c, end - c + 1, True )
@@ -401,6 +506,12 @@ class Pairing:
         gcd(t,tt) and whose periodic interval is given by the union of R and
         RR. This routine returns True if and only if it was able to perform
         this periodic merger.
+
+        Parameters:
+        --> other   The other pairing to be merged with this one.
+
+        Returns:
+            True if and only if the requested periodic merger is legal.
         """
         #TODO Modify this pairing directly.
         myInterval = self.periodicInterval()
