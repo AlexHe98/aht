@@ -260,7 +260,6 @@ class Pairing:
             self._d -= width
         return True
 
-    #TODO Test this routine.
     def truncate( self, newBound ):
         """
         Attempts to truncate the range of this pairing.
