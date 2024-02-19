@@ -328,6 +328,7 @@ class Pairing:
         self._c = ( self._a + self._d + 2 ) // 2
         return True
 
+    #TODO Modify this pairing directly?
     def mergeWith( self, other ):
         """
         Attempts to perform a periodic merger of this pairing with the other
@@ -370,6 +371,9 @@ class Pairing:
     def transmitBy( self, other ):
         """
         Transmits this pairing by the other pairing.
+
+        Warning:
+        --> Performing a transmission might modify the given other pairing.
         """
         #TODO
         pass
