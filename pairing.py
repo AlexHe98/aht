@@ -97,10 +97,18 @@ class Pairing:
         self._d = c + width - 1
         self._preserving = preserving
 
-        #NOTE This value needs to be recomputed every time we modify a, b, c
-        #   or d. It can be safely set to None, since self.width() will
-        #   handle the recomputation when called.
+        # We already know the width, so we can at least fill in this value.
+        self._resetCache()
         self._width = width
+
+    def _resetCache(self):
+        """
+        Resets cached properties to None.
+        """
+        self._width = None
+        self._translationDistance = None
+        self._isIdentity = None
+        self._periodicInterval = None
 
     def __str__(self):
         if self._preserving:
@@ -132,10 +140,29 @@ class Pairing:
     def width(self):
         """
         Returns the width of this pairing.
+
+        If the width is not already known, then this routine will calculate
+        it and cache the result.
         """
         if self._width is None:
             self._width = self._b - self._a + 1
         return self._width
+
+    def translationDistance(self):
+        """
+        Returns the translation distance if this pairing is
+        orientation-preserving, or -1 if this pairing is
+        orientation-reversing.
+
+        If the translation distance is not already known, then this routine
+        will calculate it and cache the result.
+        """
+        if self._translationDistance is None:
+            if self._preserving:
+                self._translationDistance = self._c - self._a
+            else:
+                self._translationDistance = -1
+        return self._translationDistance
 
     def domainStart(self):
         """
@@ -171,10 +198,15 @@ class Pairing:
         """
         Is this pairing a restriction of the identity map?
 
+        If the answer is not already known, then this routine will calculate
+        it and cache the result.
+
         Returns:
             True if and only if this Pairing is an identity map.
         """
-        return ( self._preserving and self._a == self._c )
+        if self._isIdentity is None:
+            self._isIdentity = ( self._preserving and self._a == self._c )
+        return self._isIdentity
 
     def domainContains( self, start, width=1 ):
         """
@@ -272,10 +304,11 @@ class Pairing:
         end = start + width - 1
         return ( start <= self._d and end >= self._c )
 
+    #TODO Test this routine.
     def periodicInterval(self):
         """
         If this pairing is periodic, then returns details of the
-        corresponding periodic interval; otherwise, returns None.
+        corresponding periodic interval; otherwise, returns the empty tuple.
 
         Specifically, if this pairing is periodic, then this routine returns
         a triple ( s, e, p ), where:
@@ -283,16 +316,21 @@ class Pairing:
         --> e is the end point; and
         --> p is the period.
 
+        If the answer is not already known, then this routine will calculate
+        it and cache the result.
+
         Returns:
             Data as detailed above.
         """
-        if ( not self._preserving ) or ( self._c > self._b + 1 ):
-            return None
-        period = self._c - self._a
-        if period == 0:
-            return None
-        else:
-            return ( self._a, self._d, period )
+        if self._periodicInterval is None:
+            if ( not self._preserving ) or ( self._c > self._b + 1 ):
+                self._periodicInterval = ()
+            period = self.translationDistance()
+            if period == 0:
+                self._periodicInterval = ()
+            else:
+                self._periodicInterval = ( self._a, self._d, period )
+        return self._periodicInterval
 
     def _contractImpl( self, start, width ):
         """
@@ -427,14 +465,14 @@ class Pairing:
         if self.isOrientationPreserving():
             self._b = self._b - ( self._d - newBound )
             self._d = newBound
-            self._width = None
+            self._resetCache()
             return True
         else:
             if self._c <= self._b:
                 return False
             self._a = self._a + self._d - newBound
             self._d = newBound
-            self._width = None
+            self._resetCache()
             return True
 
     def trim(self):
@@ -457,7 +495,7 @@ class Pairing:
         # that c is strictly greater than the average.
         self._b = ( self._a + self._d - 1 ) // 2
         self._c = ( self._a + self._d + 2 ) // 2
-        self._width = None
+        self._resetCache()
         return True
 
     def _setPeriodic( self, start, end, period ):
