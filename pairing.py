@@ -513,26 +513,26 @@ class Pairing:
         Returns:
             True if and only if the requested periodic merger is legal.
         """
-        #TODO Modify this pairing directly.
         myInterval = self.periodicInterval()
         if myInterval is None:
-            return None
+            return False
         yourInterval = other.periodicInterval()
         if yourInterval is None:
-            return None
+            return False
 
         # Do the two periodic intervals have sufficient overlap?
         overlapWidth = ( min( myInterval[1], yourInterval[1] )
                 - max( myInterval[0], yourInterval[0] )
                 + 1 )
         if overlapWidth < myInterval[2] + yourInterval[2]:
-            return None
+            return False
 
         # Construct the pairing that results from the periodic merger.
         start = min( myInterval[0], yourInterval[0] )
         end = max( myInterval[1], yourInterval[1] )
         period = gcd( myInterval[2], yourInterval[2] )
-        return periodicPairing( start, end, period )
+        self._setPeriodic( start, end, period )
+        return True
 
     def transmitBy( self, other ):
         """

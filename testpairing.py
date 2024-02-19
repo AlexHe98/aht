@@ -179,22 +179,22 @@ def testPairing():
             [ nonPeriodic, periodic1, None ],
             [ periodic1, nonPeriodic, None ],
             [ periodic1, periodic2, None ],
-            [ periodic2, periodic5, periodicPairing( 2, 13, 2 ) ],
-            [ periodic6, periodic5, periodicPairing( 5, 19, 2 ) ],
-            [ periodic6, periodic7, periodicPairing( 6, 19, 3 ) ] ]
+            [ periodic2.clone(), periodic5, periodicPairing( 2, 13, 2 ) ],
+            [ periodic6.clone(), periodic5, periodicPairing( 5, 19, 2 ) ],
+            [ periodic6.clone(), periodic7, periodicPairing( 6, 19, 3 ) ] ]
     for me, you, expected in mergeWithTestCases:
         msg = "Merge:\n    {}\n    {}\nShould ".format( me, you )
-        constructed = me.mergeWith(you)
+        changed = me.mergeWith(you)
         if expected is None:
             msg += "be impossible."
             print(msg)
-            if constructed is not None:
+            if changed:
                 raise RuntimeError( "FAILED." )
         else:
             msg += "yield:\n    {}.".format(expected)
             print(msg)
-            if constructed != expected:
-                print(constructed)
+            if ( not changed ) or ( me != expected ):
+                print(me)
                 raise RuntimeError( "FAILED." )
         print()
     # End of test suite.
