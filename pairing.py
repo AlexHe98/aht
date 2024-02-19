@@ -35,8 +35,8 @@ class Pairing:
     """
     def __init__( self, a, c, width, preserving ):
         """
-        Initialises a pairing between [a,b] and [c,d], where b = a+width-1
-        and d = c+width-1.
+        Initialises a pairing between [a,b] and [c,d], where
+        b = a + width - 1 and d = c + width - 1.
 
         The pairing is taken to be orientation-preserving if preserving is
         set to True, and orientation-reversing if preserving is set to False.
@@ -52,6 +52,11 @@ class Pairing:
         self._c = c
         self._d = c + width - 1
         self._preserving = preserving
+
+        #NOTE This value needs to be recomputed every time we modify a, b, c
+        #   or d. It can be safely set to None, since self.width() will
+        #   handle the recomputation when called.
+        self._width = width
 
     def __str__(self):
         if self._preserving:
@@ -81,7 +86,21 @@ class Pairing:
         """
         Returns the width of this pairing.
         """
-        return self._b - self._a + 1
+        if self._width is None:
+            self._width = self._b - self._a + 1
+        return self._width
+
+    def domainStart(self):
+        """
+        Returns the first point in the domain of this pairing.
+        """
+        return self._a
+
+    def rangeStart(self):
+        """
+        Returns the first point in the range of this pairing.
+        """
+        return self._c
 
     def isOrientationPreserving(self):
         """
@@ -302,12 +321,14 @@ class Pairing:
         if self.isOrientationPreserving():
             self._b = self._b - ( self._d - newBound )
             self._d = newBound
+            self._width = None
             return True
         else:
             if self._c <= self._b:
                 return False
             self._a = self._a + self._d - newBound
             self._d = newBound
+            self._width = None
             return True
 
     def trim(self):
@@ -326,6 +347,7 @@ class Pairing:
         # that c is strictly greater than the average.
         self._b = ( self._a + self._d - 1 ) // 2
         self._c = ( self._a + self._d + 2 ) // 2
+        self._width = None
         return True
 
     #TODO Modify this pairing directly?
