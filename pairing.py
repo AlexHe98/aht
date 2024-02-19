@@ -21,11 +21,13 @@ def periodicPairing( start, end, period ):
     Pre-condition:
     --> The parameters start and end are positive integers such that
         start < end.
+    --> The period parameter is a positive integer.
     """
     if period > (end - start + 1) // 2:
         return None
-    c = start + period
-    return Pairing( start, c, end - c + 1, True )
+    pairing = Pairing()
+    pairing._setPeriodic( start, end, period )
+    return pairing
 
 
 class Pairing:
@@ -33,7 +35,7 @@ class Pairing:
     A pairing between two subintervals of { 1, ..., N }, for some positive
     integer N.
     """
-    def __init__( self, a, c, width, preserving ):
+    def __init__( self, a=1, c=1, width=1, preserving=True ):
         """
         Initialises a pairing between [a,b] and [c,d], where
         b = a + width - 1 and d = c + width - 1.
@@ -47,6 +49,19 @@ class Pairing:
         # If necessary, swap a and c to ensure that a <= c.
         if a > c:
             a, c = c, a
+        self._setPairing( a, c, width, preserving )
+
+    def _setPairing( self, a, c, width, preserving ):
+        """
+        Sets this pairing to map between [a,b] and [c,d], where a <= c,
+        b = a + width - 1 and d = c + width - 1.
+
+        The pairing is taken to be orientation-preserving if preserving is
+        set to True, and orientation-reversing if preserving is set to False.
+
+        Pre-condition:
+        --> The parameters a, c and width are all positive integers.
+        """
         self._a = a
         self._b = a + width - 1
         self._c = c
@@ -350,12 +365,29 @@ class Pairing:
         self._width = None
         return True
 
-    #TODO Modify this pairing directly?
+    def _setPeriodic( self, start, end, period ):
+        """
+        Sets this pairing to a periodic pairing of the given period such that
+        the periodic interval is given by [start,end].
+
+        This routine does not check that the requested periodic pairing
+        exists. Use the periodicPairing() function to construct the requested
+        periodic pairing if it is not known in advance that this is possible.
+
+        Pre-condition:
+        --> The parameters start and end are positive integers such that
+            start < end.
+        --> The period parameter is a positive integer such that
+            period <= (end - start + 1) // 2.
+        """
+        c = start + period
+        self._setPairing( start, c, end - c + 1, True )
+
     def mergeWith( self, other ):
         """
-        Attempts to perform a periodic merger of this pairing with the other
-        pairing.
-        
+        Attempts to modify this pairing by performing a periodic merger with
+        the other pairing.
+
         In detail, a periodic merger is possible if and only if:
         --> this pairing and the other pairing are both periodic; and
         --> the respective periodic intervals R and RR have "sufficient"
@@ -367,9 +399,10 @@ class Pairing:
         When the above conditions are satisfied, the requested periodic
         merger produces a new periodic pairing P whose period is given by
         gcd(t,tt) and whose periodic interval is given by the union of R and
-        RR. If a periodic merger is possible, then this routine returns the
-        new pairing P; otherwise, this routine returns None.
+        RR. This routine returns True if and only if it was able to perform
+        this periodic merger.
         """
+        #TODO Modify this pairing directly.
         myInterval = self.periodicInterval()
         if myInterval is None:
             return None
