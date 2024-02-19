@@ -534,12 +534,45 @@ class Pairing:
         self._setPeriodic( start, end, period )
         return True
 
+    #TODO Finish documenting this routine.
+    #TODO Test this routine.
     def transmitBy( self, other ):
         """
         Transmits this pairing by the other pairing.
 
+        If the other pairing is orientation-reversing and has overlapping
+        domain and range, then the very first step of transmission is to trim
+        the other pairing.
+
+        For a transmission to be possible, the range of this pairing must be
+        contained in the range of the other pairing (after possibly trimming
+        the other pairing, as explained above). Assuming this requirement is
+        satisfied, transmission proceeds in one of the following ways:
+        -->
+
         Warning:
-        --> Performing a transmission might modify the given other pairing.
+        --> As explained above, the requested transmission might involve
+            trimming (and hence modifying) the given other pairing.
+
+        Parameters:
+        --> other   The other pairing by which to transmit this one.
+
+        Returns:
+            True if and only if the requested transmission is possible.
         """
+        # After trimming other if necessary, is the range of this contained
+        # in the range of other?
+        other.trim()
+        if not other.rangeContains( self.rangeStart(), self.width() ):
+            return False
+
+        # The effect of transmission depends on whether the *domain* of this
+        # is contained in the range of other.
+        if other.rangeContains( self.domainStart(), self.width() ):
+            #TODO
+            pass
+        else:
+            #TODO
+            pass
         #TODO
         pass
