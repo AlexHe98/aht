@@ -172,11 +172,23 @@ class Pairing:
         """
         return self._a
 
+    def domainEnd(self):
+        """
+        Returns the end point of the domain of this pairing.
+        """
+        return self._b
+
     def rangeStart(self):
         """
         Returns the start point of the range of this pairing.
         """
         return self._c
+
+    def rangeEnd(self):
+        """
+        Returns the end point of the range of this pairing.
+        """
+        return self._d
 
     def isOrientationPreserving(self):
         """
@@ -574,11 +586,11 @@ class Pairing:
         self._setPeriodic( start, end, period )
         return True
 
-    #TODO Finish documenting this routine.
     #TODO Test this routine.
     def transmitBy( self, other ):
         """
-        Transmits this pairing by the other pairing.
+        Attempts to perform a transmission of this pairing by the other
+        pairing.
 
         If the other pairing is orientation-reversing and has overlapping
         domain and range, then the very first step of transmission is to trim
@@ -587,12 +599,15 @@ class Pairing:
         For a transmission to be possible, the range of this pairing must be
         contained in the range of the other pairing (after possibly trimming
         the other pairing, as explained above). Assuming this requirement is
-        satisfied, transmission proceeds in one of the following ways:
-        -->
+        satisfied, transmission proceeds by using the other pairing to shift
+        the domain and range of this pairing as far leftwards as possible.
+        Such shifts are achieved by composing this pairing with:
+        --> some negative power of the other pairing on the left; and
+        --> some non-negative power of the other pairing on the right.
 
         Warning:
         --> As explained above, the requested transmission might involve
-            trimming (and hence modifying) the given other pairing.
+            trimming (and hence modifying) the other pairing.
 
         Parameters:
         --> other   The other pairing by which to transmit this one.
@@ -606,13 +621,42 @@ class Pairing:
         if not other.rangeContains( self.rangeStart(), self.width() ):
             return False
 
-        # The effect of transmission depends on whether the *domain* of this
-        # is contained in the range of other.
+        #TODO Refactor, then double-check logic.
+        # Transmission preserves the width of this pairing, but we need to
+        # work out how it changes the other properties of this pairing.
+        preserving = self._preserving
         if other.rangeContains( self.domainStart(), self.width() ):
-            #TODO
-            pass
+            # We can only shift the domain if it lies entirely inside the
+            # range of the other pairing.
+            if transDist < 0:
+                # If the other pairing is orientation-reversing, then we
+                # shift by applying the inverse of the other pairing exactly
+                # once; this flips the domain of this pairing, and hence
+                # changes whether this pairing preserves orientation.
+                preserving = not preserving
+                a = other.domainStart() + other.rangeEnd() - self._b
+            else:
+                # If the other pairing is orientation-preserving, then we
+                # shift by repeatedly applying the inverse of the other
+                # pairing until we overshoot the start point of the range.
+                overshoot = ( other.rangeStart() - self._a - 1 ) % transDist
+                a = other.rangeStart() - overshoot - 1
+        if transDist < 0:
+            # If the other pairing is orientation-reversing, then we shift by
+            # applying the inverse of the other pairing exactly once; this
+            # flips the domain of this pairing, and hence changes whether
+            # this pairing preserves orientation.
+            preserving = not preserving
+            c = other.domainStart() + other.rangeEnd() - self._d
         else:
-            #TODO
-            pass
-        #TODO
-        pass
+            # If the other pairing is orientation-preserving, then we shift
+            # by repeatedly applying the inverse of the other pairing until
+            # we overshoot the start point of the range.
+            overshoot = ( other.rangeStart() - self._c - 1 ) % transDist
+            c = other.rangeStart() - overshoot - 1
+
+        # Ensure that a <= c before we set the new properties.
+        if a > c:
+            a, c = c, a
+        self._setPairing( a, c, self.width(), preserving )
+        return True
