@@ -621,39 +621,38 @@ class Pairing:
         if not other.rangeContains( self.rangeStart(), self.width() ):
             return False
 
-        #TODO Refactor, then double-check logic.
         # Transmission preserves the width of this pairing, but we need to
         # work out how it changes the other properties of this pairing.
-        preserving = self._preserving
-        if other.rangeContains( self.domainStart(), self.width() ):
-            # We can only shift the domain if it lies entirely inside the
-            # range of the other pairing.
-            if transDist < 0:
-                # If the other pairing is orientation-reversing, then we
-                # shift by applying the inverse of the other pairing exactly
-                # once; this flips the domain of this pairing, and hence
-                # changes whether this pairing preserves orientation.
-                preserving = not preserving
+        transDist = other.translationDistance()
+        shiftDomain = other.rangeContains(
+                self.domainStart(), self.width() )
+        if transDist < 0:
+            # If the other pairing is orientation-reversing, then we shift
+            # by applying the inverse of the other pairing exactly once. If
+            # we do this only to the range (and not to the domain) of this
+            # pairing, then we change whether this pairing is orientation-
+            # preserving.
+            if shiftDomain:
+                preserving = self._preserving
                 a = other.domainStart() + other.rangeEnd() - self._b
             else:
-                # If the other pairing is orientation-preserving, then we
-                # shift by repeatedly applying the inverse of the other
-                # pairing until we overshoot the start point of the range.
-                overshoot = ( other.rangeStart() - self._a - 1 ) % transDist
-                a = other.rangeStart() - overshoot - 1
-        if transDist < 0:
-            # If the other pairing is orientation-reversing, then we shift by
-            # applying the inverse of the other pairing exactly once; this
-            # flips the domain of this pairing, and hence changes whether
-            # this pairing preserves orientation.
-            preserving = not preserving
+                preserving = not self._preserving
+                a = self._a
             c = other.domainStart() + other.rangeEnd() - self._d
         else:
             # If the other pairing is orientation-preserving, then we shift
             # by repeatedly applying the inverse of the other pairing until
             # we overshoot the start point of the range.
-            overshoot = ( other.rangeStart() - self._c - 1 ) % transDist
-            c = other.rangeStart() - overshoot - 1
+            preserving = self._preserving
+            if shiftDomain:
+                shift = other.rangeStart() - self._a
+                overshoot = ((shift - 1) % transDist) + 1
+                a = other.rangeStart() - overshoot
+            else:
+                a = self._a
+            shift = other.rangeStart() - self._c
+            overshoot = ((shift - 1) % transDist) + 1
+            c = other.rangeStart() - overshoot
 
         # Ensure that a <= c before we set the new properties.
         if a > c:
