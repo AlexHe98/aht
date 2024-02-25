@@ -239,21 +239,43 @@ def testPairing():
     trimmed = reversing.clone()
     trimmed.trim()
     outOfRange = Pairing( 7, 17, 7, False )
-    overshoot7 = Pairing( 6, 12, 7, True )
+    overshoot5 = Pairing( 6, 12, 7, True )
+    overshoot3 = Pairing( 6, 14, 7, True )
     overshoot1 = Pairing( 6, 16, 7, False )
-    shiftDom = Pairing( 7, 13, 7, True )
+    shiftDom = Pairing( 13, 15, 7, True )
     transmitByTestCases = [
             [ outOfRange.clone(), preserving.clone(), False,
-                outOfRange, preserving ]
-            [ overshoot7.clone(), preserving.clone(), True,
-                Pairing( 2, 6, 7, True ), preserving ] ]
-    for tranBef, othBef, expCh, tranAft, othAft in transmitByTestCases:
-        msg = "Transmit:\n    {}\nBy:\n    {}\nShould ".format(
-                tranBef, othBef )
-        changed = tranBef.transmitBy(othBef)
-        #TODO
-        pass
-    #TODO
+                outOfRange, preserving ],
+            [ overshoot5.clone(), reversing.clone(), False,
+                overshoot5, trimmed ],
+            [ overshoot5.clone(), preserving.clone(), True,
+                Pairing( 2, 6, 7, True ), preserving ],
+            [ overshoot3.clone(), preserving.clone(), True,
+                Pairing( 4, 6, 7, True ), preserving ],
+            [ overshoot1.clone(), preserving.clone(), True,
+                Pairing( 6, 6, 7, False ), preserving ],
+            [ shiftDom.clone(), preserving.clone(), True,
+                Pairing( 3, 5, 7, True ), preserving ],
+            [ overshoot3.clone(), reversing.clone(), True,
+                Pairing( 4, 6, 7, False ), trimmed ],
+            [ overshoot1.clone(), trimmed.clone(), True,
+                Pairing( 2, 6, 7, True ), trimmed ],
+            [ shiftDom.clone(), reversing.clone(), True,
+                Pairing( 3, 5, 7, True ), trimmed ] ]
+    for trans, other, expCh, transAfter, otherAfter in transmitByTestCases:
+        msg = "Transmit:\n    {}\nBy: {}\nShould ".format(
+                trans, other )
+        if expCh:
+            print( msg + "yield:\n    {}\n    {}".format(
+                transAfter, otherAfter ) )
+        else:
+            print( msg + "be impossible." )
+        changed = trans.transmitBy(other)
+        if changed != expCh or trans != transAfter or other != otherAfter:
+            print( trans, transAfter )
+            print( other, otherAfter )
+            raise RuntimeError( "FAILED." )
+        print()
 
     # End of test suite.
     print( "============================================================" )

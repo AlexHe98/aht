@@ -586,7 +586,6 @@ class Pairing:
         self._setPeriodic( start, end, period )
         return True
 
-    #TODO Test this routine.
     def transmitBy( self, other ):
         """
         Attempts to perform a transmission of this pairing by the other
@@ -607,7 +606,9 @@ class Pairing:
 
         Warning:
         --> As explained above, the requested transmission might involve
-            trimming (and hence modifying) the other pairing.
+            trimming (and hence modifying) the other pairing. Moreover, such
+            trimming might occur even if the requested transmission is
+            impossible.
 
         Parameters:
         --> other   The other pairing by which to transmit this one.
