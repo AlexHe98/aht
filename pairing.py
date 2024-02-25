@@ -318,6 +318,71 @@ class Pairing:
         end = start + width - 1
         return ( start <= self._d and end >= self._c )
 
+    #TODO Test this routine.
+    def image( self, start, width=1 ):
+        """
+        Returns the image of the interval [start,end] under this pairing,
+        where end = start + width - 1.
+
+        The image is not well-defined if the interval [start,end] does not
+        lie entirely inside the domain of this pairing; in this case, this
+        routine returns None.
+
+        Assume now that the image is well-defined. If no width is supplied or
+        the width is taken to be 1, then the image is just a single positive
+        integer, in which case this routine returns this single integer.
+        Otherwise, the image is an interval containing more than one positive
+        integer, in which case this routine returns a pair of positive
+        integers: the start point of the image interval, and the width of the
+        image interval.
+
+        Pre-condition:
+        --> The parameters start and width are both positive integers.
+
+        Parameters:
+        --> start   The start point of the interval whose image should be
+                    computed.
+        --> width   The width of the interval whose image should be computed.
+
+        Returns:
+            Data as detailed above.
+        """
+        #TODO
+        pass
+
+    #TODO Test this routine.
+    def inverseImage( self, start, width=1 ):
+        """
+        Returns the inverse image of the interval [start,end] under this
+        pairing, where end = start + width - 1.
+
+        The inverse image is not well-defined if the interval [start,end]
+        does not lie entirely inside the range of this pairing; in this case,
+        this routine returns None.
+
+        Assume now that the inverse image is well-defined. If no width is
+        supplied or the width is taken to be 1, then the inverse image is
+        just a single positive integer, in which case this routine returns
+        this single integer. Otherwise, the inverse image is an interval
+        containing more than one positive integer, in which case this routine
+        returns a pair of positive integers: the start point of the inverse
+        image interval, and the width of the inverse image interval.
+
+        Pre-condition:
+        --> The parameters start and width are both positive integers.
+
+        Parameters:
+        --> start   The start point of the interval whose inverse image
+                    should be computed.
+        --> width   The width of the interval whose inverse image should be
+                    computed.
+
+        Returns:
+            Data as detailed above.
+        """
+        #TODO
+        pass
+
     def periodicInterval(self):
         """
         If this pairing is periodic, then returns details of the
