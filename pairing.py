@@ -319,22 +319,18 @@ class Pairing:
         return ( start <= self._d and end >= self._c )
 
     #TODO Test this routine.
-    def image( self, start, width=1 ):
+    def imageStart( self, start, width=1 ):
         """
-        Returns the image of the interval [start,end] under this pairing,
-        where end = start + width - 1.
+        Returns the start point of the image of the interval [start,end]
+        under this pairing, where end = start + width - 1.
 
-        The image is not well-defined if the interval [start,end] does not
-        lie entirely inside the domain of this pairing; in this case, this
-        routine returns None.
+        If the interval [start,end] does not lie entirely inside the domain
+        of this pairing, then the image is not well-defined; in this case,
+        this routine returns None.
 
-        Assume now that the image is well-defined. If no width is supplied or
-        the width is taken to be 1, then the image is just a single positive
-        integer, in which case this routine returns this single integer.
-        Otherwise, the image is an interval containing more than one positive
-        integer, in which case this routine returns a pair of positive
-        integers: the start point of the image interval, and the width of the
-        image interval.
+        If no width is supplied, then the default behaviour of this routine
+        is to take the width to be 1; in effect, this simply computes the
+        image of a single given point.
 
         Pre-condition:
         --> The parameters start and width are both positive integers.
@@ -345,28 +341,41 @@ class Pairing:
         --> width   The width of the interval whose image should be computed.
 
         Returns:
-            Data as detailed above.
+            The start point of the image of [start,end], or None if the image
+            is not well-defined.
         """
-        #TODO
-        pass
+        # Handle the (width == 1) case first.
+        pre = start - self._a
+        if pre < 0:
+            return None
+        if width == 1:
+            if self._preserving:
+                return self._c + pre
+            else:
+                return self._d - pre
+
+        # Now handle the (width > 1) case.
+        post = self._b - start - width + 1
+        if post < 0:
+            return None
+        if self._preserving:
+            return self._c + pre
+        else:
+            return self._c + post
 
     #TODO Test this routine.
-    def inverseImage( self, start, width=1 ):
+    def inverseImageStart( self, start, width=1 ):
         """
-        Returns the inverse image of the interval [start,end] under this
-        pairing, where end = start + width - 1.
+        Returns the start point of the inverse image of the interval
+        [start,end] under this pairing, where end = start + width - 1.
 
-        The inverse image is not well-defined if the interval [start,end]
-        does not lie entirely inside the range of this pairing; in this case,
-        this routine returns None.
+        If the interval [start,end] does not lie entirely inside the range of
+        this pairing, then the inverse image is not well-defined; in this
+        case, this routine returns None.
 
-        Assume now that the inverse image is well-defined. If no width is
-        supplied or the width is taken to be 1, then the inverse image is
-        just a single positive integer, in which case this routine returns
-        this single integer. Otherwise, the inverse image is an interval
-        containing more than one positive integer, in which case this routine
-        returns a pair of positive integers: the start point of the inverse
-        image interval, and the width of the inverse image interval.
+        If no width is supplied, then the default behaviour of this routine
+        is to take the width to be 1; in effect, this simply computes the
+        inverse image of a single given point.
 
         Pre-condition:
         --> The parameters start and width are both positive integers.
@@ -378,10 +387,27 @@ class Pairing:
                     computed.
 
         Returns:
-            Data as detailed above.
+            The start point of the inverse image of [start,end], or None if
+            the inverse image is not well-defined.
         """
-        #TODO
-        pass
+        # Handle the (width == 1) case first.
+        pre = start - self._c
+        if pre < 0:
+            return None
+        if width == 1:
+            if self._preserving:
+                return self._a + pre
+            else:
+                return self._b - pre
+
+        # Now handle the (width > 1) case.
+        post = self._d - start - width + 1
+        if post < 0:
+            return None
+        if self._preserving:
+            return self._a + pre
+        else:
+            return self._a + post
 
     def periodicInterval(self):
         """
