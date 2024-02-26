@@ -262,7 +262,34 @@ def _testInverseImageStart():
     print( " Pairing.inverseImageStart( start, width ) " )
     print( "------------------------------------------------------------" )
     print()
-    #TODO
+    preserving = Pairing( 3, 7, 8, True )
+    reversing = Pairing( 3, 7, 8, False )
+    inverseImageStartTestCases = [
+            [ preserving, 6, 3, None ],
+            [ reversing, 6, 3, None ],
+            [ preserving, 7, 3, 3 ],
+            [ reversing, 7, 3, 8 ],
+            [ preserving, 9, 4, 5 ],
+            [ reversing, 9, 4, 5 ],
+            [ preserving, 12, 3, 8 ],
+            [ reversing, 12, 3, 3 ],
+            [ preserving, 13, 3, None ],
+            [ reversing, 13, 3, None ] ]
+    for pairing, start, width, expected in inverseImageStartTestCases:
+        msg = "{}\n    Inverse image of [{}, {}] should ".format(
+                pairing, start, start + width - 1 )
+        answer = pairing.inverseImageStart( start, width )
+        if expected is None:
+            print( msg + "be undefined." )
+            if answer is not None:
+                print(answer)
+                raise RuntimeError( "FAILED." )
+        else:
+            print( msg + "have start point {}.".format(expected) )
+            if answer != expected:
+                print(answer)
+                raise RuntimeError( "FAILED." )
+        print()
     return
 
 
