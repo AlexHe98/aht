@@ -97,6 +97,33 @@ def _testTranslationDistance():
     return
 
 
+def _testDomainRange():
+    #######################################################################
+    print( "============================================================" )
+    print( " Pairing domain and range endpoints " )
+    print( "------------------------------------------------------------" )
+    print()
+    preserving1447 = Pairing( 4, 1, 4, True )
+    preserving2457 = Pairing( 2, 5, 3, True )
+    reversing1447 = Pairing( 1, 4, 4, False )
+    reversing2457 = Pairing( 5, 2, 3, False )
+    domainRangeTestCases = [
+            [ preserving1447, 1, 4, 4, 7 ],
+            [ preserving2457, 2, 4, 5, 7 ],
+            [ reversing1447, 1, 4, 4, 7 ],
+            [ reversing2457, 2, 4, 5, 7 ] ]
+    for pairing, a, b, c, d in domainRangeTestCases:
+        print( "{}\n    Should map from [{}, {}] to [{}, {}].".format(
+            pairing, a, b, c, d ) )
+        if ( pairing.domainStart() != a or
+                pairing.domainEnd() != b or
+                pairing.rangeStart() != c or
+                pairing.rangeEnd() != d ):
+            raise RuntimeError( "FAILED." )
+        print()
+    return
+
+
 def _testImageStart():
     #######################################################################
     print( "============================================================" )
@@ -353,6 +380,7 @@ def _testPairing(testName):
             "periodicPairing",
             "eq",
             "translationDistance",
+            "domainRange",
             "imageStart",
             "inverseImageStart",
             "periodicInterval",
@@ -380,6 +408,8 @@ def _testPairing(testName):
         _testEq()
     if testName in { "all", "translationDistance" }:
         _testTranslationDistance()
+    if testName in { "all", "domainRange" }:
+        _testDomainRange()
     if testName in { "all", "imageStart" }:
         _testImageStart()
     if testName in { "all", "inverseImageStart" }:
