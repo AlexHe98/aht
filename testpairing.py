@@ -225,7 +225,34 @@ def _testImageStart():
     print( " Pairing.imageStart( start, width ) " )
     print( "------------------------------------------------------------" )
     print()
-    #TODO
+    preserving = Pairing( 3, 7, 8, True )
+    reversing = Pairing( 3, 7, 8, False )
+    imageStartTestCases = [
+            [ preserving, 2, 3, None ],
+            [ reversing, 2, 3, None ],
+            [ preserving, 3, 3, 7 ],
+            [ reversing, 3, 3, 12 ],
+            [ preserving, 5, 4, 9 ],
+            [ reversing, 5, 4, 9 ],
+            [ preserving, 8, 3, 12 ],
+            [ reversing, 8, 3, 7 ],
+            [ preserving, 9, 3, None ],
+            [ reversing, 9, 3, None ] ]
+    for pairing, start, width, expected in imageStartTestCases:
+        msg = "{}\n    Image of [{}, {}] should ".format(
+                pairing, start, start + width - 1 )
+        answer = pairing.imageStart( start, width )
+        if expected is None:
+            print( msg + "be undefined." )
+            if answer is not None:
+                print(answer)
+                raise RuntimeError( "FAILED." )
+        else:
+            print( msg + "have start point {}.".format(expected) )
+            if answer != expected:
+                print(answer)
+                raise RuntimeError( "FAILED." )
+        print()
     return
 
 
