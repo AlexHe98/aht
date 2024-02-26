@@ -318,7 +318,6 @@ class Pairing:
         end = start + width - 1
         return ( start <= self._d and end >= self._c )
 
-    #TODO Test this routine.
     def imageStart( self, start, width=1 ):
         """
         Returns the start point of the image of the interval [start,end]
@@ -363,7 +362,6 @@ class Pairing:
         else:
             return self._c + post
 
-    #TODO Test this routine.
     def inverseImageStart( self, start, width=1 ):
         """
         Returns the start point of the inverse image of the interval
