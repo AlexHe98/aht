@@ -1,12 +1,11 @@
 """
 Test suite for the Weights class.
 """
+from sys import argv
 from weights import Weights
 
 
-def testWeights():
-    print()
-
+def _testSetZero():
     #######################################################################
     print( "============================================================" )
     print( " Weights.setZero( start, width ) " )
@@ -52,7 +51,10 @@ def testWeights():
             raise RuntimeError( "FAILED." )
         print( "    ----------------------------------------------------" )
         print()
+    return
 
+
+def _testAddWeight():
     #######################################################################
     print( "============================================================" )
     print( " Weights.addWeight( weight, start, width ) " )
@@ -86,7 +88,35 @@ def testWeights():
             raise RuntimeError( "FAILED." )
         print( "    ----------------------------------------------------" )
         print()
-    #TODO
+    return
+
+
+def _testWeights(testName):
+    print()
+
+    # Which set of tests are we running?
+    knownTestNames = [
+            "all",
+            "setZero",
+            "addWeight" ]
+    if testName not in knownTestNames:
+        if testName == "":
+            print( "Need to supply a test name." )
+        else:
+            print( "Unknown test name." )
+        print()
+        print( "The following tests are available:" )
+        for name in knownTestNames:
+            print( "    {}".format(name) )
+        print()
+        return
+
+    # Run the requested set of tests.
+    if testName in { "all", "setZero" }:
+        _testSetZero()
+    if testName in { "all", "addWeight" }:
+        _testAddWeight()
+
     # End of test suite.
     print( "============================================================" )
     print()
@@ -97,4 +127,8 @@ def testWeights():
 
 
 if __name__ == "__main__":
-    testWeights()
+    try:
+        testName = argv[1]
+    except IndexError:
+        testName = ""
+    _testWeights(testName)
