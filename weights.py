@@ -343,10 +343,41 @@ class Weights:
         #TODO
         pass
 
-    def transfer( self, start, width, pairing ):
+    #TODO Finish documenting this routine.
+    #TODO Test this routine.
+    def transfer( self, pairing ):
         """
-        Transfers the weights in [start,end], where end = start+width-1, by
+        Transfers the weights in the range of the given pairing to smaller
+        orbit representatives.
+
+        If the given pairing is orientation-reversing and has overlapping
+        domain and range, then the very first step of the transfer is to trim
         the given pairing.
+
+        ...
+
+        Pre-condition:
+        --> The pairing parameter is an instance of Pairing.
+
+        Warning:
+        --> As explained above, the requested transfer might involve trimming
+            (and hence modifying) the given pairing.
+
+        Parameters:
+        --> pairing     The pairing by which to transfer weights.
+
+        Returns:
+            None
         """
+        pairing.trim()
+
+        # Handle the non-periodic case first, since this case is relatively
+        # straightforward.
+        if not pairing.periodicInterval():
+            self.setZero( pairing.rangeStart(), pairing.width() )
+            #TODO
+            pass
+
+        # Now handle the periodic case.
         #TODO
-        pass
+        return

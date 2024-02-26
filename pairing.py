@@ -412,10 +412,13 @@ class Pairing:
         If this pairing is periodic, then returns details of the
         corresponding periodic interval; otherwise, returns the empty tuple.
 
-        Specifically, if this pairing is periodic, then this routine returns
-        a triple ( s, e, p ), where:
-        --> s is the start point;
-        --> e is the end point; and
+        In detail, this pairing is periodic if and only if it satisfies the
+        following two conditions:
+        --> it is orientation-preserving; and
+        --> there is no gap between its domain and range.
+        In this case, this routine returns a triple ( s, e, p ), where:
+        --> s is the start point of the periodic interval;
+        --> e is the end point of the periodic interval; and
         --> p is the period.
 
         If the answer is not already known, then this routine will calculate
