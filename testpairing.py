@@ -124,6 +124,30 @@ def _testDomainRange():
     return
 
 
+def _testPreserving():
+    #######################################################################
+    print( "============================================================" )
+    print( " Pairing.isOrientationPreserving()" )
+    print( "------------------------------------------------------------" )
+    print()
+    preserving = Pairing( 1, 2, 3, True )
+    reversing = Pairing( 1, 2, 3, False )
+    preservingTestCases = [
+            [ preserving, True ],
+            [ reversing, False ] ]
+    for pairing, isPres in preservingTestCases:
+        msg = "{}\n    Should be orientation-".format(pairing)
+        if isPres:
+            print( msg + "preserving." )
+        else:
+            print( msg + "reversing." )
+        if ( pairing.isOrientationPreserving() != isPres or
+                pairing.isOrientationReversing == isPres ):
+            raise RuntimeError( "FAILED." )
+        print()
+    return
+
+
 def _testImageStart():
     #######################################################################
     print( "============================================================" )
@@ -381,6 +405,7 @@ def _testPairing(testName):
             "eq",
             "translationDistance",
             "domainRange",
+            "preserving",
             "imageStart",
             "inverseImageStart",
             "periodicInterval",
@@ -410,6 +435,8 @@ def _testPairing(testName):
         _testTranslationDistance()
     if testName in { "all", "domainRange" }:
         _testDomainRange()
+    if testName in { "all", "preserving" }:
+        _testPreserving()
     if testName in { "all", "imageStart" }:
         _testImageStart()
     if testName in { "all", "inverseImageStart" }:
