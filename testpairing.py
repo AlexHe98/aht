@@ -100,25 +100,72 @@ def _testTranslationDistance():
 def _testDomainRange():
     #######################################################################
     print( "============================================================" )
-    print( " Pairing domain and range endpoints " )
+    print( " Pairing domain and range " )
     print( "------------------------------------------------------------" )
     print()
-    preserving1447 = Pairing( 4, 1, 4, True )
-    preserving2457 = Pairing( 2, 5, 3, True )
-    reversing1447 = Pairing( 1, 4, 4, False )
-    reversing2457 = Pairing( 5, 2, 3, False )
-    domainRangeTestCases = [
-            [ preserving1447, 1, 4, 4, 7 ],
-            [ preserving2457, 2, 4, 5, 7 ],
-            [ reversing1447, 1, 4, 4, 7 ],
-            [ reversing2457, 2, 4, 5, 7 ] ]
-    for pairing, a, b, c, d in domainRangeTestCases:
+    preserving1436 = Pairing( 3, 1, 4, True )
+    preserving2468 = Pairing( 2, 6, 3, True )
+    reversing1436 = Pairing( 1, 3, 4, False )
+    reversing2468 = Pairing( 6, 2, 3, False )
+    domainRangeEndpointTestCases = [
+            [ preserving1436, 1, 4, 3, 6 ],
+            [ preserving2468, 2, 4, 6, 8 ],
+            [ reversing1436, 1, 4, 3, 6 ],
+            [ reversing2468, 2, 4, 6, 8 ] ]
+    for pairing, a, b, c, d in domainRangeEndpointTestCases:
         print( "{}\n    Should map from [{}, {}] to [{}, {}].".format(
             pairing, a, b, c, d ) )
         if ( pairing.domainStart() != a or
                 pairing.domainEnd() != b or
                 pairing.rangeStart() != c or
                 pairing.rangeEnd() != d ):
+            raise RuntimeError( "FAILED." )
+        print()
+    print( "    ----------------------------------------------------" )
+    print()
+    domainRangeContainsTestCases = [
+            [ preserving1436, 2, 3, True, False ],
+            [ reversing1436, 3, 3, False, True ],
+            [ preserving1436, 3, 2, True, True ],
+            [ reversing1436, 2, 4, False, False ],
+            [ preserving2468, 2, 3, True, False ],
+            [ reversing2468, 6, 3, False, True ],
+            [ preserving2468, 4, 3, False, False ] ]
+    for pair, start, width, domCont, ranCont in domainRangeContainsTestCases:
+        msg = "{}\n    Domain should ".format(pair)
+        if not domCont:
+            msg += "not "
+        cont = "contain [{}, {}].".format( start, start + width - 1 )
+        msg += "{}\n    Range should ".format(cont)
+        if not ranCont:
+            msg += "not "
+        print( msg + cont )
+        if ( pair.domainContains( start, width ) != domCont or
+                pair.rangeContains( start, width ) != ranCont ):
+            raise RuntimeError( "FAILED." )
+        print()
+    print( "    ----------------------------------------------------" )
+    print()
+    domainRangeMeetsTestCases = [
+            [ reversing1436, 1, 2, True, False ],
+            [ preserving1436, 5, 3, False, True ],
+            [ reversing1436, 2, 5, True, True ],
+            [ preserving1436, 7, 3, False, False ],
+            [ preserving2468, 1, 2, True, False ],
+            [ reversing2468, 5, 3, False, True ],
+            [ preserving2468, 4, 3, True, True ],
+            [ reversing2468, 5, 1, False, False ] ]
+    for pair, start, width, domMeet, ranMeet in domainRangeMeetsTestCases:
+        msg = "{}\n    Domain should ".format(pair)
+        if not domMeet:
+            msg += "not "
+        meet = "meet [{}, {}].".format( start, start + width - 1 )
+        msg += "{}\n    Range should ".format(meet)
+        if not ranMeet:
+            msg += "not "
+        print( msg + meet )
+        if ( pair.domainMeets( start, width ) != domMeet or
+                pair.rangeMeets( start, width ) != ranMeet ):
             raise RuntimeError( "FAILED." )
         print()
     return
