@@ -70,6 +70,28 @@ def testPairing():
 
     #######################################################################
     print( "============================================================" )
+    print( " Pairing.translationDistance() " )
+    print( "------------------------------------------------------------" )
+    print()
+    preserving3 = Pairing( 2, 5, 12, True )
+    preserving8 = Pairing( 3, 11, 4, True )
+    reversing = Pairing( 1, 5, 5, False )
+    translationDistanceTestCases = [
+            [ preserving3, 3 ],
+            [ preserving8, 8 ],
+            [ reversing, -1 ] ]
+    for pairing, distance in translationDistanceTestCases:
+        msg = "{}\n    Should have ".format(pairing)
+        if distance < 0:
+            print( msg + "undefined translation distance." )
+        else:
+            print( msg + "translation distance {}.".format(distance) )
+        if pairing.translationDistance() != distance:
+            raise RuntimeError( "FAILED." )
+        print()
+
+    #######################################################################
+    print( "============================================================" )
     print( " Pairing.imageStart( start, width ) " )
     print( "------------------------------------------------------------" )
     print()
