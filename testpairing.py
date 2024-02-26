@@ -1,12 +1,11 @@
 """
 Test suite for the Pairing class.
 """
+from sys import argv
 from pairing import periodicPairing, Pairing
 
 
-def testPairing():
-    print()
-
+def _testPeriodicPairing():
     #######################################################################
     print( "============================================================" )
     print( " periodicPairing( start, end, period ) " )
@@ -38,7 +37,10 @@ def testPairing():
                 print(constructed)
                 raise RuntimeError( "FAILED." )
         print()
+    return
 
+
+def _testEq():
     #######################################################################
     print( "============================================================" )
     print( " Pairing.__eq__(other) " )
@@ -67,7 +69,10 @@ def testPairing():
         if ( me == you ) != eq:
             raise RuntimeError( "FAILED." )
         print()
+    return
 
+
+def _testTranslationDistance():
     #######################################################################
     print( "============================================================" )
     print( " Pairing.translationDistance() " )
@@ -89,21 +94,30 @@ def testPairing():
         if pairing.translationDistance() != distance:
             raise RuntimeError( "FAILED." )
         print()
+    return
 
+
+def _testImageStart():
     #######################################################################
     print( "============================================================" )
     print( " Pairing.imageStart( start, width ) " )
     print( "------------------------------------------------------------" )
     print()
     #TODO
+    return
 
+
+def _testInverseImageStart():
     #######################################################################
     print( "============================================================" )
     print( " Pairing.inverseImageStart( start, width ) " )
     print( "------------------------------------------------------------" )
     print()
     #TODO
+    return
 
+
+def _testPeriodicInterval():
     #######################################################################
     print( "============================================================" )
     print( " Pairing.periodicInterval() " )
@@ -134,7 +148,10 @@ def testPairing():
             print( pairing.periodicInterval() )
             raise RuntimeError( "FAILED." )
         print()
+    return
 
+
+def _testContract():
     #######################################################################
     print( "============================================================" )
     print( " Pairing.contract( start, width ) " )
@@ -167,7 +184,10 @@ def testPairing():
                     oldPairing != newPairing ):
                 raise RuntimeError( "FAILED." )
         print()
+    return
 
+
+def _testTruncate():
     #######################################################################
     print( "============================================================" )
     print( " Pairing.truncate(newBound) " )
@@ -194,7 +214,10 @@ def testPairing():
             print(oldPairing)
             raise RuntimeError( "FAILED." )
         print()
+    return
 
+
+def _testTrim():
     #######################################################################
     print( "============================================================" )
     print( " Pairing.trim() " )
@@ -230,7 +253,10 @@ def testPairing():
             print( "    {}".format( you._preserving ) )
             raise RuntimeError( "FAILED." )
         print()
+    return
 
+
+def _testMergeWith():
     #######################################################################
     print( "============================================================" )
     print( " Pairing.mergeWith(other) " )
@@ -264,7 +290,10 @@ def testPairing():
                 print(me)
                 raise RuntimeError( "FAILED." )
         print()
+    return
 
+
+def _testTransmitBy():
     #######################################################################
     print( "============================================================" )
     print( " Pairing.transmitBy(other) " )
@@ -312,6 +341,61 @@ def testPairing():
             print( other, otherAfter )
             raise RuntimeError( "FAILED." )
         print()
+    return
+
+
+def _testPairing(testName):
+    print()
+
+    # Which set of tests are we running?
+    knownTestNames = [
+            "all",
+            "periodicPairing",
+            "eq",
+            "translationDistance",
+            "imageStart",
+            "inverseImageStart",
+            "periodicInterval",
+            "contract",
+            "truncate",
+            "trim",
+            "mergeWith",
+            "transmitBy" ]
+    if testName not in knownTestNames:
+        if testName == "":
+            print( "Need to supply a test name." )
+        else:
+            print( "Unknown test name." )
+        print()
+        print( "The following tests are available:" )
+        for name in knownTestNames:
+            print( "    {}".format(name) )
+        print()
+        return
+
+    # Run the requested set of tests.
+    if testName in { "all", "periodicPairing" }:
+        _testPeriodicPairing()
+    if testName in { "all", "eq" }:
+        _testEq()
+    if testName in { "all", "translationDistance" }:
+        _testTranslationDistance()
+    if testName in { "all", "imageStart" }:
+        _testImageStart()
+    if testName in { "all", "inverseImageStart" }:
+        _testInverseImageStart()
+    if testName in { "all", "periodicInterval" }:
+        _testPeriodicInterval()
+    if testName in { "all", "contract" }:
+        _testContract()
+    if testName in { "all", "truncate" }:
+        _testTruncate()
+    if testName in { "all", "trim" }:
+        _testTrim()
+    if testName in { "all", "mergeWith" }:
+        _testMergeWith()
+    if testName in { "all", "transmitBy" }:
+        _testTransmitBy()
 
     # End of test suite.
     print( "============================================================" )
@@ -323,4 +407,8 @@ def testPairing():
 
 
 if __name__ == "__main__":
-    testPairing()
+    try:
+        testName = argv[1]
+    except IndexError:
+        testName = ""
+    _testPairing(testName)
