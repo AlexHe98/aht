@@ -148,6 +148,30 @@ def _testPreserving():
     return
 
 
+def _testIsIdentity():
+    #######################################################################
+    print( "============================================================" )
+    print( " Pairing.isIdentity() " )
+    print( "------------------------------------------------------------" )
+    print()
+    iden = Pairing( 3, 3, 5, True )
+    preserving = Pairing( 3, 4, 5, True )
+    reversing = Pairing( 3, 3, 5, False )
+    isIdentityTestCases = [
+            [ iden, True ],
+            [ preserving, False ],
+            [ reversing, False ] ]
+    for pairing, isIden in isIdentityTestCases:
+        msg = "{}\n    Should ".format(pairing)
+        if not isIden:
+            msg += "not "
+        print( msg + "be an identity map." )
+        if pairing.isIdentity() != isIden:
+            raise RuntimeError( "FAILED." )
+        print()
+    return
+
+
 def _testImageStart():
     #######################################################################
     print( "============================================================" )
@@ -406,6 +430,7 @@ def _testPairing(testName):
             "translationDistance",
             "domainRange",
             "preserving",
+            "isIdentity",
             "imageStart",
             "inverseImageStart",
             "periodicInterval",
@@ -437,6 +462,8 @@ def _testPairing(testName):
         _testDomainRange()
     if testName in { "all", "preserving" }:
         _testPreserving()
+    if testName in { "all", "isIdentity" }:
+        _testIsIdentity()
     if testName in { "all", "imageStart" }:
         _testImageStart()
     if testName in { "all", "inverseImageStart" }:
