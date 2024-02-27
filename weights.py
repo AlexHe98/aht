@@ -165,7 +165,10 @@ class Weights:
         --> The parameter start is a non-negative integer such that
             start < self.countSubintervals().
         """
-        previousEnd = 0
+        if start == 0:
+            previousEnd = 0
+        else:
+            previousEnd = self._weights[i-1][0]
         for i in range( start, self.countSubintervals() ):
             currentEnd, currentWeight = self._weights[i]
             if x <= currentEnd:
@@ -374,9 +377,31 @@ class Weights:
         # Handle the non-periodic case first, since this case is relatively
         # straightforward.
         if not pairing.periodicInterval():
+            # Iteratively transfer weights out of the constant-weight
+            # subintervals of the range of the given pairing.
+            start = pairing.rangeStart()
+            i, _, end, weight = self._findSubinterval(start)
+            #TODO Can possibly accelerate adding weights by exploiting the
+            #   fact that we know where the previous subinterval was.
+            while start <= pairing.rangeEnd():
+                # Transfer weight out of the current constant-weight
+                # subinterval.
+                width = end - start + 1
+                inverseStart = pairing.inverseImageStart( start, width )
+                self.addWeight( weight, inverseStart, width )
+
+                # Find the next constant-weight subinterval.
+                i += 1
+                start = end + 1
+                end, weight = self._weights[i]
+                if end > pairing.rangeEnd():
+                    end = pairing.rangeEnd()
+
+            # Now that the weights have been transferred out of the range of
+            # the given pairing, we finish the transfer operation by setting
+            # all the weights inside the range to zero.
             self.setZero( pairing.rangeStart(), pairing.width() )
-            #TODO
-            pass
+            return
 
         # Now handle the periodic case.
         #TODO
