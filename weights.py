@@ -177,16 +177,18 @@ class Weights:
         if index == 0:
             previousEnd = 0
         else:
-            previousEnd = self._weights[i-1][0]
+            previousEnd = self._weights[ index - 1 ][0]
+        if x <= previousEnd:
+            return None
+
+        # Since we now have x > previousEnd, we are guaranteed to succeed
+        # (assuming that x <= self.intervalLength()).
         for i in range( index, self.countSubintervals() ):
             currentEnd, currentWeight = self._weights[i]
             if x <= currentEnd:
                 return ( i, previousEnd + 1, currentEnd, currentWeight )
             else:
                 previousEnd = currentEnd
-
-        # If we reach this point, then we failed.
-        return None
 
     #TODO Update test suite.
     def setZero( self, start, width, index=0 ):

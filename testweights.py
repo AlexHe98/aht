@@ -22,33 +22,48 @@ def _testSetZero():
             ( 4, [0,0,0,0] ),
             ( 4, [1,2,3,4] ) ]
     setZeroTestCases = [
-            [ woutZeros, 4, 1, 7, False ],
-            [ woutZeros, 4, 3, 6, False ],
-            [ woutZeros, 3, 4, 5, False ],
-            [ woutZeros, 2, 10, 3, False ],
-            [ withZeros, 5, 2, 3, True ],
-            [ withZeros, 5, 3, 3, True ],
-            [ withZeros, 6, 3, 3, False ],
-            [ withZeros, 4, 3, 3, True ],
-            [ withZeros, 3, 3, 3, False ],
-            [ withZeros, 4, 4, 3, True ],
-            [ withZeros, 3, 5, 3, False ],
-            [ withZeros, 4, 8, 2, False ],
-            [ withZeros, 1, 9, 2, False ] ]
-    for data, start, width, subintervals, isUnchanged in setZeroTestCases:
+            [ woutZeros, 4, 1, 1, ( 7, False ) ],
+            [ woutZeros, 4, 3, 0, ( 6, False ) ],
+            [ woutZeros, 3, 4, 1, ( 5, False ) ],
+            [ woutZeros, 3, 4, 2, None ],
+            [ woutZeros, 2, 10, 0, ( 3, False ) ],
+            [ woutZeros, 2, 10, 1, None ],
+            [ withZeros, 5, 2, 1, ( 3, True ) ],
+            [ withZeros, 5, 3, 0, ( 3, True ) ],
+            [ withZeros, 6, 3, 1, ( 3, False ) ],
+            [ withZeros, 6, 3, 2, None ],
+            [ withZeros, 4, 3, 0, ( 3, True ) ],
+            [ withZeros, 3, 3, 0, ( 3, False ) ],
+            [ withZeros, 3, 3, 1, None ],
+            [ withZeros, 4, 4, 0, ( 3, True ) ],
+            [ withZeros, 3, 5, 0, ( 3, False ) ],
+            [ withZeros, 4, 8, 1, ( 2, False ) ],
+            [ withZeros, 1, 9, 0, ( 2, False ) ] ]
+    for data, start, width, index, expected in setZeroTestCases:
         weights = Weights(data)
         end = start + width - 1
         print( weights.detail() )
-        msg = "    Set [{}, {}] to zero.".format( start, end )
-        print(msg)
-        print( "    {}".format( "-" * ( len(msg) - 4 ) ) )
-        print()
-        weights.setZero( start, width )
-        print( weights.detail() )
-        if weights.countSubintervals() != subintervals:
-            raise RuntimeError( "FAILED." )
-        if ( weights == Weights(data) ) != isUnchanged:
-            raise RuntimeError( "FAILED." )
+        print( "    Set [{}, {}] to zero.".format( start, end ) )
+        msg = "    Searching from index {} should ".format(index)
+        success = weights.setZero( start, width, index )
+        if expected is None:
+            msg += "fail."
+            print(msg)
+            print( "    {}".format( "-" * ( len(msg) - 4 ) ) )
+            print()
+            if success:
+                raise RuntimeError( "FAILED." )
+        else:
+            subintervals, isUnchanged = expected
+            msg += "succeed."
+            print(msg)
+            print( "    {}".format( "-" * ( len(msg) - 4 ) ) )
+            print()
+            print( weights.detail() )
+            if ( not success or
+                    weights.countSubintervals() != subintervals or
+                    ( weights == Weights(data) ) != isUnchanged ):
+                raise RuntimeError( "FAILED." )
         print( "    ----------------------------------------------------" )
         print()
     return
