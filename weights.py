@@ -190,7 +190,6 @@ class Weights:
             else:
                 previousEnd = currentEnd
 
-    #TODO Update test suite.
     def setZero( self, start, width, index=0 ):
         """
         Sets the weights on the interval [start,end] to zero, where
@@ -279,7 +278,6 @@ class Weights:
                 self._weights.insert( i, [ end, zero ] )
         return True
 
-    #TODO Update test suite.
     def addWeight( self, weight, start, width, index=0 ):
         """
         Adds the given weight to the image of each element of the interval

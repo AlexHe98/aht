@@ -52,6 +52,7 @@ def _testSetZero():
             print( "    {}".format( "-" * ( len(msg) - 4 ) ) )
             print()
             if success:
+                print( weights.detail() )
                 raise RuntimeError( "FAILED." )
         else:
             subintervals, isUnchanged = expected
@@ -81,26 +82,39 @@ def _testAddWeight():
             ( 5, [1,1,1] ),
             ( 4, [3,3,3] ) ]
     addWeightTestCases = [
-            [ addWeightTestData, [1,2,3], 5, 5, 6 ],
-            [ addWeightTestData, [1,2,3], 2, 8, 6 ],
-            [ addWeightTestData, [1,2,3], 9, 3, 6 ],
-            [ addWeightTestData, [1,2,3], 1, 14, 5 ],
-            [ addWeightTestData, [1,2,3], 3, 10, 5 ],
-            [ addWeightTestData, [2,2,2], 9, 4, 4 ],
-            [ addWeightTestData, [2,2,2], 8, 9, 3 ],
-            [ addWeightTestData, [2,2,2], 8, 5, 2 ] ]
-    for data, summand, start, width, subintervals in addWeightTestCases:
+            [ addWeightTestData, [1,2,3], 5, 5, 1, 6 ],
+            [ addWeightTestData, [1,2,3], 2, 8, 0, 6 ],
+            [ addWeightTestData, [1,2,3], 9, 3, 2, 6 ],
+            [ addWeightTestData, [1,2,3], 9, 3, 3, None ],
+            [ addWeightTestData, [1,2,3], 1, 14, 0, 5 ],
+            [ addWeightTestData, [1,2,3], 3, 10, 0, 5 ],
+            [ addWeightTestData, [1,2,3], 3, 10, 1, None ],
+            [ addWeightTestData, [2,2,2], 9, 4, 0, 4 ],
+            [ addWeightTestData, [2,2,2], 8, 9, 2, 3 ],
+            [ addWeightTestData, [2,2,2], 8, 5, 0, 2 ] ]
+    for data, summand, start, width, index, subints in addWeightTestCases:
         weights = Weights(data)
         end = start + width - 1
         print( weights.detail() )
-        msg = "    Add {} to [{}, {}].".format( summand, start, end )
-        print(msg)
-        print( "    {}".format( "-" * ( len(msg) - 4 ) ) )
-        print()
-        weights.addWeight( summand, start, width )
-        print( weights.detail() )
-        if weights.countSubintervals() != subintervals:
-            raise RuntimeError( "FAILED." )
+        print( "    Add {} to [{}, {}].".format( summand, start, end ) )
+        msg = "    Searching from index {} should ".format(index)
+        success = weights.addWeight( summand, start, width, index )
+        if subints is None:
+            msg += "fail."
+            print(msg)
+            print( "    {}".format( "-" * ( len(msg) - 4 ) ) )
+            print()
+            if success:
+                print( weights.detail() )
+                raise RuntimeError( "FAILED." )
+        else:
+            msg += "succeed."
+            print(msg)
+            print( "    {}".format( "-" * ( len(msg) - 4 ) ) )
+            print()
+            print( weights.detail() )
+            if weights.countSubintervals() != subints:
+                raise RuntimeError( "FAILED." )
         print( "    ----------------------------------------------------" )
         print()
     return
