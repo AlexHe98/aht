@@ -198,7 +198,7 @@ class Weights:
         constant-weight subinterval contains the given start point. This
         routine returns True if and only if this search is successful. If the
         given index is 0 (the default), then this search is guaranteed to be
-        successful.
+        successful (assuming that start <= self.intervalLength()).
 
         Let m = self.countSubintervals(). This routine runs in O(m^2)-time.
 
@@ -277,11 +277,17 @@ class Weights:
                 self._weights.insert( i, [ end, zero ] )
         return True
 
-    #TODO Maybe add an index=0 argument to shortcut searching where possible.
-    def addWeight( self, weight, start, width ):
+    #TODO Update test suite.
+    def addWeight( self, weight, start, width, index=0 ):
         """
         Adds the given weight to the image of each element of the interval
         [start,end], where end = start + width - 1.
+
+        This routine begins by searching for i >= index such that the ith
+        constant-weight subinterval contains the given start point. This
+        routine returns True if and only if this search is successful. If the
+        given index is 0 (the default), then this search is guaranteed to be
+        successful (assuming that start <= self.intervalLength()).
 
         Let m = self.countSubintervals(), and let C denote the worst-case
         complexity of adding the given weight to any particular vector in the
@@ -294,13 +300,29 @@ class Weights:
             where d = self.dimension().
         --> The parameters start and width are positive integers such that
             start + width - 1 <= self.intervalLength().
+
+        Parameters:
+        --> weight  The weight to be added to the specified interval.
+        --> start   The start point of the interval to which we should add
+                    the given weight.
+        --> width   The width of the interval to which we should add the
+                    given weight.
+        --> index   The index at which to start searching for the constant-
+                    weight subinterval containing the given start point.
+
+        Returns:
+            True if and only if this routine found the constant-weight
+            subinterval containing the given start point.
         """
         if weight == [0] * self.dimension():
             return
         end = start + width - 1
 
         # In O(m)-time, find the subinterval [p,q] that contains start.
-        i, p, q, assignedWeight = self._findSubinterval(start)
+        data = self._findSubinterval( start, index )
+        if data is None:
+            return False
+        i, p, q, assignedWeight = data
 
         # Handle the weights immediately preceding the interval [start,end].
         #TODO In the worst case, this step requires O(m)-time, since it might
@@ -366,6 +388,7 @@ class Weights:
         elif previousWeight == currentWeight:
             # The case where [start,end] ends at the beginning of S.
             self._weights.pop(i-1)
+        return True
 
     def append(self):
         """
