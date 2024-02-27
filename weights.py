@@ -149,11 +149,11 @@ class Weights:
         """
         return len( self._weights )
 
-    def _findSubinterval( self, x, start=0 ):
+    def _findSubinterval( self, x, index=0 ):
         """
-        Finds i >= start such that the ith subinterval [p,q] contains x, and
-        returns the tuple (i, p, q, w), where w is the weight assigned to
-        each integer in [p,q].
+        Finds i >= index such that the ith constant-weight subinterval [p,q]
+        contains x, and returns the tuple (i, p, q, w), where w is the weight
+        assigned to each integer in [p,q].
 
         This routine returns None if it cannot find the required subinterval.
 
@@ -162,14 +162,23 @@ class Weights:
         Pre-condition:
         --> The parameter x is a positive integer such that
             x <= self.intervalLength().
-        --> The parameter start is a non-negative integer such that
-            start < self.countSubintervals().
+        --> The parameter index is a non-negative integer such that
+            index < self.countSubintervals().
+
+        Parameters:
+        --> x       A point inside the constant-weight subinterval that we
+                    are required to find.
+        --> index   The subinterval index at which to start searching for the
+                    point x.
+
+        Returns:
+            Data as detailed above.
         """
-        if start == 0:
+        if index == 0:
             previousEnd = 0
         else:
             previousEnd = self._weights[i-1][0]
-        for i in range( start, self.countSubintervals() ):
+        for i in range( index, self.countSubintervals() ):
             currentEnd, currentWeight = self._weights[i]
             if x <= currentEnd:
                 return ( i, previousEnd + 1, currentEnd, currentWeight )
@@ -179,10 +188,17 @@ class Weights:
         # If we reach this point, then we failed.
         return None
 
-    def setZero( self, start, width ):
+    #TODO Update test suite.
+    def setZero( self, start, width, index=0 ):
         """
         Sets the weights on the interval [start,end] to zero, where
         end = start + width - 1.
+
+        This routine begins by searching for i >= index such that the ith
+        constant-weight subinterval contains the given start point. This
+        routine returns True if and only if this search is successful. If the
+        given index is 0 (the default), then this search is guaranteed to be
+        successful.
 
         Let m = self.countSubintervals(). This routine runs in O(m^2)-time.
 
@@ -192,6 +208,18 @@ class Weights:
 
         TODO:
         --> Optimise: improve running time from O(m^2) to O(m).
+
+        Parameters:
+        --> start   The start point of the interval whose weights should be
+                    set to zero.
+        --> width   The width of the interval whose weights should be set to
+                    zero.
+        --> index   The index at which to start searching for the constant-
+                    weight subinterval containing the given start point.
+
+        Returns:
+            True if and only if this routine found the constant-weight
+            subinterval containing the given start point.
         """
         #TODO This routine could be improved to O(m)-time by encoding
         #   self._weights as a linked list.
@@ -199,7 +227,10 @@ class Weights:
         zero = [0] * self.dimension()
 
         # In O(m)-time, find the subinterval [p,q] that contains start.
-        i, p, q, assignedWeight = self._findSubinterval(start)
+        data = self._findSubinterval( start, index )
+        if data is None:
+            return False
+        i, p, q, assignedWeight = data
 
         # If start > p, then the weight on the subinterval [p,start-1] should
         # remain as the original assignedWeight (i.e., it does not need to be
@@ -244,7 +275,9 @@ class Weights:
                 self._weights[i-1] = [ end, zero ]
             else:
                 self._weights.insert( i, [ end, zero ] )
+        return True
 
+    #TODO Maybe add an index=0 argument to shortcut searching where possible.
     def addWeight( self, weight, start, width ):
         """
         Adds the given weight to the image of each element of the interval
