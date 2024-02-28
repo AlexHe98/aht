@@ -471,5 +471,25 @@ class Weights:
             return
 
         # Now handle the periodic case.
+        period = pairing.periodicInterval()[2]
+        transferInstructions = []
+        repStart = pairing.domainStart()
+        repEnd = pairing.rangeStart - 1
+        start = pairing.rangeStart()
+        i, _, end, weight = self._findSubinterval(start)
+        while start <= pairing.rangeEnd():
+            # To where should we transfer the weights on the current
+            # constant-weight subinterval?
+            width = end - start + 1
+            quotient = width // period
+            remainder = width % period
+            #TODO
+
+            # Find the next constant-weight subinterval.
+            i += 1
+            start = end + 1
+            end, weight = self._weights[i]
+            if end > pairing.rangeEnd():
+                end = pairing.rangeEnd()
         #TODO
         return
