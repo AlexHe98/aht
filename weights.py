@@ -433,26 +433,6 @@ class Weights:
         Returns:
             None
         """
-        # Handle the orientation-reversing case first.
-        if pairing.isOrientationReversing():
-            pairing.trim()
-
-            # Iteratively transfer weights out of the constant-weight
-            # subintervals of the range of the given pairing.
-            start = pairing.rangeStart()
-            i, _, end, weight = self._findSubinterval(start)
-            #TODO
-            pass
-
-        # Now handle the orientation-preserving but non-periodic case.
-        #NOTE This is very similar to the orientation-reversing case, but we
-        #   handle it separately to optimise the algorithm slightly.
-        if not pairing.periodicInterval():
-            #TODO
-            pass
-
-        # Finally, handle the periodic case.
-        #TODO Reimplement.
         pairing.trim()
 
         # Handle the non-periodic case first, since this case is relatively
