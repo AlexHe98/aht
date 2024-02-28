@@ -225,8 +225,6 @@ class Weights:
         """
         #TODO This routine could be improved to O(m)-time by encoding
         #   self._weights as a linked list.
-        end = start + width - 1
-        zero = [0] * self.dimension()
 
         # In O(m)-time, find the subinterval [p,q] that contains start.
         data = self._findSubinterval( start, index )
@@ -234,6 +232,9 @@ class Weights:
             return None
         i, p, q, assignedWeight = data
         foundIndex = i
+
+        zero = [0] * self.dimension()
+        end = start + width - 1
 
         # If start > p, then the weight on the subinterval [p,start-1] should
         # remain as the original assignedWeight (i.e., it does not need to be
@@ -317,16 +318,16 @@ class Weights:
             start point, or None if this routine failed to find the required
             subinterval.
         """
-        if weight == [0] * self.dimension():
-            return
-        end = start + width - 1
-
         # In O(m)-time, find the subinterval [p,q] that contains start.
         data = self._findSubinterval( start, index )
         if data is None:
             return None
         i, p, q, assignedWeight = data
         foundIndex = i
+
+        if weight == [0] * self.dimension():
+            return foundIndex
+        end = start + width - 1
 
         # Handle the weights immediately preceding the interval [start,end].
         #TODO In the worst case, this step requires O(m)-time, since it might
@@ -379,7 +380,7 @@ class Weights:
         #NOTE In the worst case, this last step requires O(C+m)-time, since
         #   it might involve either a pop or an insertion operation.
         if i == self.countSubintervals():
-            return
+            return foundIndex
         currentWeight = self._weights[i][1]
         if i == 0:
             previousEnd = 0
