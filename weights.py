@@ -438,18 +438,18 @@ class Weights:
         # Handle the non-periodic case first, since this case is relatively
         # straightforward.
         if not pairing.periodicInterval():
-            # Iteratively transfer weights out of the constant-weight
-            # subintervals of the range of the given pairing.
+            # Find all the destinations for the weights that will be
+            # transferred out of the range of the given pairing.
+            transferInstructions = []
             start = pairing.rangeStart()
             i, _, end, weight = self._findSubinterval(start)
-            #TODO Can possibly accelerate adding weights by exploiting the
-            #   fact that we know where the previous subinterval was.
             while start <= pairing.rangeEnd():
-                # Transfer weight out of the current constant-weight
-                # subinterval.
+                # To where should we transfer the weights on the current
+                # constant-weight subinterval?
                 width = end - start + 1
                 inverseStart = pairing.inverseImageStart( start, width )
-                self.addWeight( weight, inverseStart, width )
+                transferInstructions.append(
+                        ( weight, inverseStart, width ) )
 
                 # Find the next constant-weight subinterval.
                 i += 1
@@ -458,10 +458,16 @@ class Weights:
                 if end > pairing.rangeEnd():
                     end = pairing.rangeEnd()
 
-            # Now that the weights have been transferred out of the range of
-            # the given pairing, we finish the transfer operation by setting
-            # all the weights inside the range to zero.
+            # Set all the weights in the range of the given pairing to zero,
+            # and then use the transferInstructions to ensure that orbit
+            # weights are preserved.
             self.setZero( pairing.rangeStart(), pairing.width() )
+            #TODO Can probably optimise by dividing into cases depending on
+            #   whether the given pairing is orientation-preserving, and then
+            #   exploiting what we know about the order of the subintervals
+            #   to which we are adding weight.
+            for weight, start, width in transferInstructions:
+                self.addWeight( weight, start, width )
             return
 
         # Now handle the periodic case.
