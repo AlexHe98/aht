@@ -407,18 +407,25 @@ class Weights:
         #TODO
         pass
 
-    #TODO Finish documenting this routine.
-    #TODO Test this routine.
     def transferBy( self, pairing ):
         """
         Transfers the weights in the range of the given pairing to smaller
         orbit representatives.
 
-        If the given pairing is orientation-reversing and has overlapping
-        domain and range, then the very first step of the transfer is to trim
-        the given pairing.
-
-        ...
+        The transfer operation has no effect if the given pairing is a
+        restriction of the identity map. Otherwise, this operation proceeds
+        in one of three ways:
+        --> If the given pairing is orientation-reversing, then the very
+            first step is to ensure, by trimming if necessary, that its
+            domain and range are disjoint. We then use the inverse of this
+            pairing to transfer the weights from the range to the domain.
+        --> If the given pairing is orientation-preserving but is not
+            periodic (which means that there is a gap between the domain and
+            range), then we again use the inverse of this pairing to transfer
+            the weights from the range to the domain.
+        --> If the given pairing is periodic with period p, then we use
+            periodicity to transfer all the weights in the periodic interval
+            I to the first p points in I.
 
         Pre-condition:
         --> The pairing parameter is an instance of Pairing.
@@ -433,6 +440,8 @@ class Weights:
         Returns:
             None
         """
+        if pairing.isIdentity():
+            return
         pairing.trim()
 
         # Handle the non-periodic case first, since this case is relatively
