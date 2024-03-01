@@ -473,17 +473,34 @@ class Weights:
         # Now handle the periodic case.
         period = pairing.periodicInterval()[2]
         transferInstructions = []
-        repStart = pairing.domainStart()
-        repEnd = pairing.rangeStart - 1
+        a = pairing.domainStart()
+        aMod = a % period
         start = pairing.rangeStart()
         i, _, end, weight = self._findSubinterval(start)
         while start <= pairing.rangeEnd():
-            # To where should we transfer the weights on the current
-            # constant-weight subinterval?
             width = end - start + 1
-            quotient = width // period
+
+            # Due to periodicity, the weights on the current constant-weight
+            # subinterval get transferred at least (width // period) times to
+            # the interval [a,a+period-1].
+            transferInstructions.append(
+                    ( (width // period) * weight, a, period ) )
+
+            # We get some extra weight transferred if the width of the
+            # current constant-weight subinterval is not exactly divisible
+            # by the period.
             remainder = width % period
-            #TODO
+            if remainder > 0:
+                extraStart = (start - aMod) % period
+                extraEnd = (extraStart + remainder - 1) % period
+                if extraStart <= extraEnd:
+                    transferInstructions.append(
+                            ( weight, a + extraStart, remainder ) )
+                else:
+                    transferInstructions.append(
+                            ( weight, a, extraEnd + 1 ) )
+                    transferInstructions.append(
+                            ( weight, a + extraStart, period - extraStart ) )
 
             # Find the next constant-weight subinterval.
             i += 1
@@ -491,5 +508,4 @@ class Weights:
             end, weight = self._weights[i]
             if end > pairing.rangeEnd():
                 end = pairing.rangeEnd()
-        #TODO
         return

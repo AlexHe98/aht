@@ -123,6 +123,16 @@ def _testAddWeight():
     return
 
 
+def _testTransferBy():
+    #######################################################################
+    print( "============================================================" )
+    print( " Weights.transferBy(pairing) " )
+    print( "------------------------------------------------------------" )
+    print()
+    #TODO
+    return
+
+
 def _testWeights(testName):
     print()
 
@@ -130,7 +140,8 @@ def _testWeights(testName):
     knownTestNames = [
             "all",
             "setZero",
-            "addWeight" ]
+            "addWeight",
+            "transferBy" ]
     if testName not in knownTestNames:
         if testName == "":
             print( "Need to supply a test name." )
@@ -148,6 +159,8 @@ def _testWeights(testName):
         _testSetZero()
     if testName in { "all", "addWeight" }:
         _testAddWeight()
+    if testName in { "all", "transferBy" }:
+        _testTransferBy()
 
     # End of test suite.
     print( "============================================================" )
