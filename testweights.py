@@ -3,6 +3,7 @@ Test suite for the Weights class.
 """
 from sys import argv
 from weights import Weights
+from pairing import Pairing
 
 
 def _testSetZero():
@@ -129,7 +130,34 @@ def _testTransferBy():
     print( " Weights.transferBy(pairing) " )
     print( "------------------------------------------------------------" )
     print()
+    transferByTestData = [
+            ( 3, [1,2,3] ),     # [1,3]
+            ( 4, [3,3,3] ),     # [4,7]
+            ( 5, [1,1,1] ),     # [8,12]
+            ( 4, [3,3,3] ) ]    # [13,16]
+    iden = Pairing( 6, 6, 11, True )            # [6,16] <-> [6,16]
+    reversing = Pairing( 3, 6, 11, False )      # [3,13] <-> [6,16]
+    trimmed = reversing.clone()
+    trimmed.trim()                              # [3,9] <-> [10,16]
+    nonPeriodic = Pairing( 2, 10, 7, True )     # [2,8] <-> [10,16]
+    periodic = Pairing( 2, 6, 11, True )        # [2,12] <-> [6,16]
+    transferByTestCases = [
+            [ transferByTestData, iden.clone(), iden, 4 ],
+            [ transferByTestData, reversing.clone(), trimmed, 6 ] ]
     #TODO
+    for data, pairing, pairAfter, subints in transferByTestCases:
+        weights = Weights(data)
+        print( weights.detail() )
+        msg = str(pairing)
+        print( "    Transfer by:\n        {}.".format(msg) )
+        print( "    {}".format( "-" * (len(msg)+5) ) )
+        print()
+        weights.transferBy(pairing)
+        print( weights.detail() )
+        if pairing != pairAfter or weights.countSubintervals() != subints:
+            raise RuntimeError( "FAILED." )
+        print( "    ----------------------------------------------------" )
+        print()
     return
 
 

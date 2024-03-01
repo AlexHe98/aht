@@ -463,7 +463,10 @@ class Weights:
                 # Find the next constant-weight subinterval.
                 i += 1
                 start = end + 1
-                end, weight = self._weights[i]
+                try:
+                    end, weight = self._weights[i]
+                except IndexError:
+                    break
                 if end > pairing.rangeEnd():
                     end = pairing.rangeEnd()
 
@@ -514,7 +517,10 @@ class Weights:
             # Find the next constant-weight subinterval.
             i += 1
             start = end + 1
-            end, weight = self._weights[i]
+            try:
+                end, weight = self._weights[i]
+            except IndexError:
+                break
             if end > pairing.rangeEnd():
                 end = pairing.rangeEnd()
         return
