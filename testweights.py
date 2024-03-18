@@ -124,7 +124,6 @@ def _testAddWeight():
     return
 
 
-#TODO Need to make these tests more rigorous.
 def _testTransferBy():
     #######################################################################
     print( "============================================================" )
@@ -142,22 +141,49 @@ def _testTransferBy():
     trimmed.trim()                              # [3,9] <-> [10,16]
     nonPeriodic = Pairing( 2, 10, 7, True )     # [2,8] <-> [10,16]
     periodic = Pairing( 2, 6, 11, True )        # [2,12] <-> [6,16]
+    reversingExp = [
+            ( 2, [1,2,3] ),     # [1,2]
+            ( 1, [4,5,6] ),     # [3,3]
+            ( 3, [6,6,6] ),     # [4,6]
+            ( 1, [4,4,4] ),     # [7,7]
+            ( 2, [2,2,2] ),     # [8,9]
+            ( 7, [0,0,0] ) ]    # [10,16]
+    nonPeriodicExp = [
+            ( 2, [1,2,3] ),     # [1,2]
+            ( 1, [2,3,4] ),     # [3,3]
+            ( 2, [4,4,4] ),     # [4,5]
+            ( 2, [6,6,6] ),     # [6,7]
+            ( 2, [4,4,4] ),     # [8,9]
+            ( 7, [0,0,0] ) ]    # [10,16]
+    periodicExp = [
+            ( 1, [1,2,3] ),     # [1,1]
+            ( 2, [8,9,10] ),    # [2,3]
+            ( 1, [8,8,8] ),     # [4,4]
+            ( 1, [4,4,4] ),     # [5,5]
+            ( 11, [0,0,0] ) ]   # [6,16]
     transferByTestCases = [
-            [ transferByTestData, iden.clone(), iden, 4 ],
-            [ transferByTestData, reversing.clone(), trimmed, 6 ],
-            [ transferByTestData, trimmed.clone(), trimmed, 6 ],
-            [ transferByTestData, nonPeriodic.clone(), nonPeriodic, 6 ],
-            [ transferByTestData, periodic.clone(), periodic, 4 ] ]
-    for data, pairing, pairAfter, subints in transferByTestCases:
+            [ transferByTestData, iden.clone(), iden,
+                transferByTestData ],
+            [ transferByTestData, reversing.clone(), trimmed,
+                reversingExp ],
+            [ transferByTestData, trimmed.clone(), trimmed,
+                reversingExp ],
+            [ transferByTestData, nonPeriodic.clone(), nonPeriodic,
+                nonPeriodicExp ],
+            [ transferByTestData, periodic.clone(), periodic,
+                periodicExp ] ]
+    for data, pairing, pairAfter, expectedData in transferByTestCases:
         weights = Weights(data)
+        expected = Weights(expectedData)
         print( weights.detail() )
         msg = str(pairing)
         print( "    Transfer by:\n        {}.".format(msg) )
         print( "    {}".format( "-" * (len(msg)+5) ) )
         print()
         weights.transferBy(pairing)
-        print( weights.detail() )
-        if pairing != pairAfter or weights.countSubintervals() != subints:
+        print( expected.detail() )
+        if pairing != pairAfter or weights != expected:
+            print( weights.detail() )
             raise RuntimeError( "FAILED." )
         print( "--------------------------------------------------------" )
         print()
