@@ -124,6 +124,7 @@ def _testAddWeight():
     return
 
 
+#TODO Need to make these tests more rigorous.
 def _testTransferBy():
     #######################################################################
     print( "============================================================" )
@@ -143,8 +144,10 @@ def _testTransferBy():
     periodic = Pairing( 2, 6, 11, True )        # [2,12] <-> [6,16]
     transferByTestCases = [
             [ transferByTestData, iden.clone(), iden, 4 ],
-            [ transferByTestData, reversing.clone(), trimmed, 6 ] ]
-    #TODO
+            [ transferByTestData, reversing.clone(), trimmed, 6 ],
+            [ transferByTestData, trimmed.clone(), trimmed, 6 ],
+            [ transferByTestData, nonPeriodic.clone(), nonPeriodic, 6 ],
+            [ transferByTestData, periodic.clone(), periodic, 4 ] ]
     for data, pairing, pairAfter, subints in transferByTestCases:
         weights = Weights(data)
         print( weights.detail() )
