@@ -66,7 +66,7 @@ def _testSetZero():
                     weights.countSubintervals() != subintervals or
                     ( weights == Weights(data) ) != isUnchanged ):
                 raise RuntimeError( "FAILED." )
-        print( "    ----------------------------------------------------" )
+        print( "--------------------------------------------------------" )
         print()
     return
 
@@ -119,7 +119,7 @@ def _testAddWeight():
                     weights.countSubintervals() != subints ):
                 print(foundIndex)
                 raise RuntimeError( "FAILED." )
-        print( "    ----------------------------------------------------" )
+        print( "--------------------------------------------------------" )
         print()
     return
 
@@ -156,7 +156,7 @@ def _testTransferBy():
         print( weights.detail() )
         if pairing != pairAfter or weights.countSubintervals() != subints:
             raise RuntimeError( "FAILED." )
-        print( "    ----------------------------------------------------" )
+        print( "--------------------------------------------------------" )
         print()
     return
 
