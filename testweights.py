@@ -92,7 +92,8 @@ def _testAddWeight():
             [ addWeightTestData, [1,2,3], 3, 10, 1, None ],
             [ addWeightTestData, [2,2,2], 9, 4, 0, ( 2, 4 ) ],
             [ addWeightTestData, [2,2,2], 8, 9, 2, ( 2, 3 ) ],
-            [ addWeightTestData, [2,2,2], 8, 5, 0, ( 2, 2 ) ] ]
+            [ addWeightTestData, [2,2,2], 8, 5, 0, ( 2, 2 ) ],
+            [ addWeightTestData, [1,1,1], 2, 3, 0, ( 0, 6 ) ] ]
     for data, summand, start, width, index, expected in addWeightTestCases:
         weights = Weights(data)
         end = start + width - 1
