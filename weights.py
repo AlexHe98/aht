@@ -36,10 +36,16 @@ class Weights:
     #   This data is all stored in order in a list L, so that we can (for
     #   instance) recover the first element of the ith subinterval by simply
     #   adding one to the last element of the (i-1)st subinterval.
-    #NOTE Let m = len(L). A feature of the chosen data structure is that
-    #   insertion and pop operations on L often correspond to useful
-    #   modifications of the weight mapping:
-    #   --> Insertion:
+    #NOTE Let m = len(L). A feature of the chosen data structure is that many
+    #   operations on L correspond to useful modifications of the weight
+    #   mapping:
+    #   --> Append:
+    #       Let [p,q] denote the last subinterval, and let w denote the
+    #       weight assigned to [p,q]. For x > 0 and ww != w, appending the
+    #       list [ x, ww ] corresponds to adding a new subinterval [q+1,q+x]
+    #       to the end of this weight mapping, and assigning weight ww to
+    #       this new subinterval.
+    #   --> Insert:
     #       Let i be in { 0, ..., m - 1 }; let [p,q] denote the ith
     #       subinterval; and let w denote the weight assigned to [p,q]. For x
     #       in [p,q-1], inserting the list [ x, ww ] before the ith entry of
@@ -52,14 +58,17 @@ class Weights:
     #       denote the weights assigned to [p,q] and [pp,qq], respectively.
     #       Popping the ith entry of L corresponds to merging [p,q] and
     #       [pp,qq] into a single subinterval [p,qq] with weight ww.
-    def __init__( self, data ):
+    def __init__( self, data=None ):
         """
         Uses the given data to initialise a map from { 1, ..., N } to weight
         vectors of dimension d, for some positive integers N and d.
 
-        The given data should be a list of length L, where L>0, such that for
-        each i in { 0, ..., L-1 }, the ith entry of this data is a pair
-        ( width<i>, weight<i> ), where:
+        If no data is supplied, then the weight mapping is taken to have
+        empty domain.
+
+        Otherwise, the given data should be a list of length L, where L>0,
+        such that for each i in { 0, ..., L-1 }, the ith entry of this data
+        is a pair ( width<i>, weight<i> ), where:
         --> width<i> is a positive integer; and
         --> weight<i> is a list containing precisely d positive integers.
 
@@ -74,6 +83,9 @@ class Weights:
         """
         total = 0
         self._weights = []
+        if data is None:
+            self._dim = None
+            return
         previousWeight = []
         for i in range( len(data) ):
             width, weight = data[i]
@@ -129,10 +141,26 @@ class Weights:
             start = end + 1
         return msg
 
+    def isEmpty(self):
+        """
+        Is this weight mapping empty?
+
+        Returns:
+            True if and only if the domain of this weight mapping is empty.
+        """
+        return (not self._weights)
+
     def dimension(self):
         """
         Returns the dimension of the vectors in the image of this weight
         mapping.
+
+        If this weight mapping is empty, then the dimension might not have
+        been defined yet, which means that this routine might return None.
+
+        Returns:
+            The dimension of the weight vectors, or None if this dimension
+            has not been defined yet.
         """
         return self._dim
 
@@ -140,7 +168,10 @@ class Weights:
         """
         Returns the interval length N of this weight mapping.
         """
-        return self._weights[-1][0]
+        if self.isEmpty():
+            return 0
+        else:
+            return self._weights[-1][0]
 
     def countSubintervals(self):
         """
@@ -174,6 +205,8 @@ class Weights:
         Returns:
             Data as detailed above.
         """
+        if self.isEmpty():
+            return None
         if index == 0:
             previousEnd = 0
         else:
@@ -395,18 +428,6 @@ class Weights:
             self._weights.pop(i-1)
         return foundIndex
 
-    def append(self):
-        """
-        """
-        #TODO
-        pass
-
-    def contract(self):
-        """
-        """
-        #TODO
-        pass
-
     def transferBy( self, pairing ):
         """
         Transfers the weights in the range of the given pairing to smaller
@@ -449,7 +470,7 @@ class Weights:
         Returns:
             None
         """
-        if pairing.isIdentity():
+        if self.isEmpty() or pairing.isIdentity():
             return
         pairing.trim()
 
@@ -556,3 +577,37 @@ class Weights:
         for weight, start, width in transferInstructions:
             self.addWeight( weight, start, width )
         return
+
+    def extend( self, width, weight ):
+        """
+        Extends the domain of this weight mapping by the given width, and
+        assigns the given weight to the new elements of the domain.
+
+        This routine raises WeightDimensionError if:
+        --> self.dimension() is not None; and
+        --> len(weight) != self.dimension().
+
+        Pre-condition:
+        --> The given width is a positive integer.
+        --> The given weight is a list of non-negative integers.
+
+        Parameters:
+        --> width   The width by which to extend the domain of this weight
+                    mapping.
+        --> weight  The weight to be assigned to the newly-added elements of
+                    the domain.
+
+        Returns:
+            None
+        """
+        if self._weights and self._weights[-1][1] == weight:
+            # Merge new subinterval with the last subinterval.
+            self._weights[-1][0] += width
+        else:
+            self._weights.append( [ width, weight ] )
+
+    def contract(self):
+        """
+        """
+        #TODO
+        pass
