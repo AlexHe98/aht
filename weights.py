@@ -366,17 +366,17 @@ class Weights:
         #       weight mapping (i.e., end == self.intervalWidth()), and hence
         #       there is nothing left to do.
         #   --> If i < self.countSubintervals(), then either the interval
-        #       [start,end] ends at the beginning of the ith subinterval S,
-        #       or it ends somewhere in the middle of S (it cannot end at the
-        #       end of S, since we would have incremented i in the previous
-        #       step). In this case, one of the following tasks remains:
-        #       --- If [start,end] ends in the middle of S, then we can
-        #           finish the adding weight procedure by simply inserting a
-        #           new subinterval.
-        #       --- If [start,end] ends at the beginning of S, then there is
-        #           nothing left to do unless the weight assigned to end is
-        #           now equal to the weight assigned to S, in which case we
-        #           need to merge S with the (i-1)st subinterval.
+        #       [start,end] ends just before the ith subinterval S, or it
+        #       ends somewhere inside S (except at the very end of S, since
+        #       we would otherwise have incremented i in the previous step).
+        #       In this case, one of the following tasks remains:
+        #       --- If [start,end] ends inside S, then we can finish the
+        #           adding weight procedure by simply inserting a new
+        #           subinterval.
+        #       --- If [start,end] ends just before S, then there is nothing
+        #           left to do unless the weight assigned to end is now equal
+        #           to the weight assigned to S, in which case we need to
+        #           merge S with the (i-1)st subinterval.
         #NOTE In the worst case, this last step requires O(C+m)-time, since
         #   it might involve either a pop or an insertion operation.
         if i == self.countSubintervals():
@@ -386,12 +386,12 @@ class Weights:
             previousEnd = 0
         else:
             previousEnd, previousWeight = self._weights[i-1]
-        if end > previousEnd + 1:
-            # The case where [start,end] ends in the middle of S.
+        if end > previousEnd:
+            # The case where [start,end] ends inside S.
             self._weights.insert(
                     i, [ end, _vectorSum( currentWeight, weight ) ] )
         elif previousWeight == currentWeight:
-            # The case where [start,end] ends at the beginning of S.
+            # The case where [start,end] ends just before S.
             self._weights.pop(i-1)
         return foundIndex
 
