@@ -427,12 +427,21 @@ class Weights:
             periodicity to transfer all the weights in the periodic interval
             I to the first p points in I.
 
+        Let m = self.countSubintervals(), and let C denote the worst-case
+        complexity of adding two arbitrary weights in the image of this
+        weight mapping (roughly, C scales logarithmically with the size of
+        the integers in the weight vectors). This routine runs in
+        O(C*m^2)-time.
+
         Pre-condition:
         --> The pairing parameter is an instance of Pairing.
 
         Warning:
         --> As explained above, the requested transfer might involve trimming
             (and hence modifying) the given pairing.
+
+        TODO:
+        --> Optimise: improve running time from O(C*m^2) to O(C*m).
 
         Parameters:
         --> pairing     The pairing by which to transfer weights.
@@ -446,9 +455,14 @@ class Weights:
 
         # Handle the non-periodic case first, since this case is relatively
         # straightforward.
+        #TODO This case currently requires O(C*m^2)-time, but it should be
+        #   possible to improve it to O(C*m)-time.
         if not pairing.periodicInterval():
             # Find all the destinations for the weights that will be
             # transferred out of the range of the given pairing.
+            #NOTE We require O(m)-time to find the subinterval containing the
+            #   start of the range of pairing, and then O(m)-time to visit
+            #   each subinterval that meets the range of pairing.
             transferInstructions = []
             start = pairing.rangeStart()
             i, _, end, weight = self._findSubinterval(start)
@@ -473,21 +487,31 @@ class Weights:
             # Set all the weights in the range of the given pairing to zero,
             # and then use the transferInstructions to ensure that orbit
             # weights are preserved.
+            #TODO We require O(m^2)-time to run self.setZero(), but this can
+            #   be optimised to O(m)-time.
             self.setZero( pairing.rangeStart(), pairing.width() )
-            #TODO Can probably optimise by dividing into cases depending on
-            #   whether the given pairing is orientation-preserving, and then
-            #   exploiting what we know about the order of the subintervals
-            #   to which we are adding weight.
+            #TODO We need to make O(m) calls to self.addWeight(), requiring
+            #   O(C*m^2)-time in total.
+            #       Can possibly improve to O(C*m)-time by dividing into
+            #   cases depending on whether the given pairing is
+            #   orientation-preserving, and then exploiting what we know
+            #   about the order of the subintervals to which we are adding
+            #   weight.
             for weight, start, width in transferInstructions:
                 self.addWeight( weight, start, width )
             return
 
         # Now handle the periodic case.
+        #NOTE This case also currently requires O(C*m^2)-time, but again it
+        #   should be possible to improve it to O(C*m)-time.
         period = pairing.periodicInterval()[2]
         transferInstructions = []
         a = pairing.domainStart()
         aMod = a % period
         start = pairing.rangeStart()
+        #NOTE Similar to above, we require O(m)-time to find the subinterval
+        #   containing start. We then need to visit O(m) subintervals that
+        #   meet the range of pairing.
         i, _, end, weight = self._findSubinterval(start)
         while start <= pairing.rangeEnd():
             width = end - start + 1
@@ -495,8 +519,8 @@ class Weights:
             # Due to periodicity, the weights on the current constant-weight
             # subinterval get transferred at least (width // period) times to
             # the interval [a,a+period-1].
-            transferInstructions.append(
-                    ( [ (width // period) * w for w in weight ], a, period ) )
+            transferInstructions.append( (
+                [ (width // period) * w for w in weight ], a, period ) )
 
             # We get some extra weight transferred if the width of the
             # current constant-weight subinterval is not exactly divisible
@@ -523,8 +547,12 @@ class Weights:
                 break
             if end > pairing.rangeEnd():
                 end = pairing.rangeEnd()
+        #TODO As above, we require O(m^2)-time to run self.setZero(), but
+        #   this can be optimised to O(m)-time.
         self.setZero( pairing.rangeStart(), pairing.width() )
-        #TODO Similar to above, can possibly optimise this.
+        #TODO We need to make O(m) calls to self.addWeight(), requiring
+        #   O(C*m^2)-time in total. Similar to above, this can possibly be
+        #   improved to O(C*m)-time.
         for weight, start, width in transferInstructions:
             self.addWeight( weight, start, width )
         return
