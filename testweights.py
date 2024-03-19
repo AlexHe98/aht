@@ -164,7 +164,7 @@ def _testTransferBy():
             ( 1, [1,2,3] ),     # [1,1]
             ( 2, [8,9,10] ),    # [2,3]
             ( 1, [8,8,8] ),     # [4,4]
-            ( 1, [4,4,4] ),     # [5,5]
+            ( 1, [7,7,7] ),     # [5,5]
             ( 11, [0,0,0] ) ]   # [6,16]
     transferByTestCases = [
             [ transferByTestData, iden.clone(), iden,

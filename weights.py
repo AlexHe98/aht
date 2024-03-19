@@ -496,7 +496,7 @@ class Weights:
             # subinterval get transferred at least (width // period) times to
             # the interval [a,a+period-1].
             transferInstructions.append(
-                    ( (width // period) * weight, a, period ) )
+                    ( [ (width // period) * w for w in weight ], a, period ) )
 
             # We get some extra weight transferred if the width of the
             # current constant-weight subinterval is not exactly divisible
@@ -523,4 +523,8 @@ class Weights:
                 break
             if end > pairing.rangeEnd():
                 end = pairing.rangeEnd()
+        self.setZero( pairing.rangeStart(), pairing.width() )
+        #TODO Similar to above, can possibly optimise this.
+        for weight, start, width in transferInstructions:
+            self.addWeight( weight, start, width )
         return
