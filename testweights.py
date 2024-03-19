@@ -13,33 +13,76 @@ def _testSetZero():
     print( "------------------------------------------------------------" )
     print()
     woutZeros = [
-            ( 2, [1,2,3] ),
-            ( 3, [4,5,6] ),
-            ( 2, [3,4,5] ),
-            ( 3, [2,3,4] ),
-            ( 3, [1,2,3] ) ]
+            ( 2, [1,2,3] ),     # [1,2]
+            ( 3, [4,5,6] ),     # [3,5]
+            ( 2, [3,4,5] ),     # [6,7]
+            ( 3, [2,3,4] ),     # [8,10]
+            ( 3, [1,2,3] ) ]    # [11,13]
+    expWout4_1 = [
+            ( 2, [1,2,3] ),     # [1,2]
+            ( 1, [4,5,6] ),     # [3,3]
+            ( 1, [0,0,0] ),     # [4,4]
+            ( 1, [4,5,6] ),     # [5,5]
+            ( 2, [3,4,5] ),     # [6,7]
+            ( 3, [2,3,4] ),     # [8,10]
+            ( 3, [1,2,3] ) ]    # [11,13]
+    expWout4_3 = [
+            ( 2, [1,2,3] ),     # [1,2]
+            ( 1, [4,5,6] ),     # [3,3]
+            ( 3, [0,0,0] ),     # [4,6]
+            ( 1, [3,4,5] ),     # [7,7]
+            ( 3, [2,3,4] ),     # [8,10]
+            ( 3, [1,2,3] ) ]    # [11,13]
+    expWout3_4 = [
+            ( 2, [1,2,3] ),     # [1,2]
+            ( 4, [0,0,0] ),     # [3,6]
+            ( 1, [3,4,5] ),     # [7,7]
+            ( 3, [2,3,4] ),     # [8,10]
+            ( 3, [1,2,3] ) ]    # [11,13]
+    expWout2_10 = [
+            ( 1, [1,2,3] ),     # [1,1]
+            ( 10, [0,0,0] ),     # [2,11]
+            ( 2, [1,2,3] ) ]    # [12,13]
     withZeros = [
-            ( 3, [2,3,4,5] ),
-            ( 4, [0,0,0,0] ),
-            ( 4, [1,2,3,4] ) ]
+            ( 3, [2,3,4,5] ),   # [1,3]
+            ( 4, [0,0,0,0] ),   # [4,7]
+            ( 4, [1,2,3,4] ) ]  # [8,11]
+    expWith6_3 = [
+            ( 3, [2,3,4,5] ),   # [1,3]
+            ( 5, [0,0,0,0] ),   # [4,8]
+            ( 3, [1,2,3,4] ) ]  # [9,11]
+    expWith3_3 = [
+            ( 2, [2,3,4,5] ),   # [1,2]
+            ( 5, [0,0,0,0] ),   # [3,7]
+            ( 4, [1,2,3,4] ) ]  # [8,11]
+    expWith3_5 = [
+            ( 2, [2,3,4,5] ),   # [1,2]
+            ( 5, [0,0,0,0] ),   # [3,7]
+            ( 4, [1,2,3,4] ) ]  # [8,11]
+    expWith4_8 = [
+            ( 3, [2,3,4,5] ),   # [1,3]
+            ( 8, [0,0,0,0] ) ]  # [4,11]
+    expWith1_9 = [
+            ( 9, [0,0,0,0] ),   # [1,9]
+            ( 2, [1,2,3,4] ) ]  # [10,11]
     setZeroTestCases = [
-            [ woutZeros, 4, 1, 1, ( 1, 7, False ) ],
-            [ woutZeros, 4, 3, 0, ( 1, 6, False ) ],
-            [ woutZeros, 3, 4, 1, ( 1, 5, False ) ],
+            [ woutZeros, 4, 1, 1, ( 1, expWout4_1 ) ],
+            [ woutZeros, 4, 3, 0, ( 1, expWout4_3 ) ],
+            [ woutZeros, 3, 4, 1, ( 1, expWout3_4 ) ],
             [ woutZeros, 3, 4, 2, None ],
-            [ woutZeros, 2, 10, 0, ( 0, 3, False ) ],
+            [ woutZeros, 2, 10, 0, ( 0, expWout2_10 ) ],
             [ woutZeros, 2, 10, 1, None ],
-            [ withZeros, 5, 2, 1, ( 1, 3, True ) ],
-            [ withZeros, 5, 3, 0, ( 1, 3, True ) ],
-            [ withZeros, 6, 3, 1, ( 1, 3, False ) ],
+            [ withZeros, 5, 2, 1, ( 1, withZeros ) ],
+            [ withZeros, 5, 3, 0, ( 1, withZeros ) ],
+            [ withZeros, 6, 3, 1, ( 1, expWith6_3 ) ],
             [ withZeros, 6, 3, 2, None ],
-            [ withZeros, 4, 3, 0, ( 1, 3, True ) ],
-            [ withZeros, 3, 3, 0, ( 0, 3, False ) ],
+            [ withZeros, 4, 3, 0, ( 1, withZeros ) ],
+            [ withZeros, 3, 3, 0, ( 0, expWith3_3 ) ],
             [ withZeros, 3, 3, 1, None ],
-            [ withZeros, 4, 4, 0, ( 1, 3, True ) ],
-            [ withZeros, 3, 5, 0, ( 0, 3, False ) ],
-            [ withZeros, 4, 8, 1, ( 1, 2, False ) ],
-            [ withZeros, 1, 9, 0, ( 0, 2, False ) ] ]
+            [ withZeros, 4, 4, 0, ( 1, withZeros ) ],
+            [ withZeros, 3, 5, 0, ( 0, expWith3_5 ) ],
+            [ withZeros, 4, 8, 1, ( 1, expWith4_8 ) ],
+            [ withZeros, 1, 9, 0, ( 0, expWith1_9 ) ] ]
     for data, start, width, index, expected in setZeroTestCases:
         weights = Weights(data)
         end = start + width - 1
@@ -56,15 +99,16 @@ def _testSetZero():
                 print( weights.detail() )
                 raise RuntimeError( "FAILED." )
         else:
-            expectedIndex, subintervals, isUnchanged = expected
+            expectedIndex, expectedData = expected
+            expectedWeights = Weights(expectedData)
             msg += "find index {}.".format(expectedIndex)
             print(msg)
             print( "    {}".format( "-" * ( len(msg) - 4 ) ) )
             print()
-            print( weights.detail() )
+            print( expectedWeights.detail() )
             if ( foundIndex != expectedIndex or
-                    weights.countSubintervals() != subintervals or
-                    ( weights == Weights(data) ) != isUnchanged ):
+                    weights != expectedWeights ):
+                print( weights.detail() )
                 raise RuntimeError( "FAILED." )
         print( "--------------------------------------------------------" )
         print()
