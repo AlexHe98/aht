@@ -122,25 +122,97 @@ def _testAddWeight():
     print( "------------------------------------------------------------" )
     print()
     addWeightTestData = [
-            ( 3, [1,2,3] ),
-            ( 4, [3,3,3] ),
-            ( 5, [1,1,1] ),
-            ( 4, [3,3,3] ) ]
+            ( 3, [1,2,3] ),     # [1,3]
+            ( 4, [3,3,3] ),     # [4.7]
+            ( 5, [1,1,1] ),     # [8,12]
+            ( 4, [3,3,3] ) ]    # [13,16]
+    exp5_5 = [
+            ( 3, [1,2,3] ),     # [1,3]
+            ( 1, [3,3,3] ),     # [4.4]
+            ( 3, [4,5,6] ),     # [5.7]
+            ( 2, [2,3,4] ),     # [8,9]
+            ( 3, [1,1,1] ),     # [10,12]
+            ( 4, [3,3,3] ) ]    # [13,16]
+    exp2_8 = [
+            ( 1, [1,2,3] ),     # [1,1]
+            ( 2, [2,4,6] ),     # [2,3]
+            ( 4, [4,5,6] ),     # [4.7]
+            ( 2, [2,3,4] ),     # [8,9]
+            ( 3, [1,1,1] ),     # [10,12]
+            ( 4, [3,3,3] ) ]    # [13,16]
+    exp9_3 = [
+            ( 3, [1,2,3] ),     # [1,3]
+            ( 4, [3,3,3] ),     # [4.7]
+            ( 1, [1,1,1] ),     # [8,8]
+            ( 3, [2,3,4] ),     # [9,11]
+            ( 1, [1,1,1] ),     # [12,12]
+            ( 4, [3,3,3] ) ]    # [13,16]
+    exp1_14 = [
+            ( 3, [2,4,6] ),     # [1,3]
+            ( 4, [4,5,6] ),     # [4.7]
+            ( 5, [2,3,4] ),     # [8,12]
+            ( 2, [4,5,6] ),     # [13,14]
+            ( 2, [3,3,3] ) ]    # [15,16]
+    exp3_10 = [
+            ( 2, [1,2,3] ),     # [1,2]
+            ( 1, [2,4,6] ),     # [3,3]
+            ( 4, [4,5,6] ),     # [4.7]
+            ( 5, [2,3,4] ),     # [8,12]
+            ( 4, [3,3,3] ) ]    # [13,16]
+    exp9_4 = [
+            ( 3, [1,2,3] ),     # [1,3]
+            ( 4, [3,3,3] ),     # [4.7]
+            ( 1, [1,1,1] ),     # [8,8]
+            ( 8, [3,3,3] ) ]    # [9,16]
+    exp8_9 = [
+            ( 3, [1,2,3] ),     # [1,3]
+            ( 9, [3,3,3] ),     # [4.12]
+            ( 4, [5,5,5] ) ]    # [13,16]
+    exp8_5 = [
+            ( 3, [1,2,3] ),     # [1,3]
+            ( 13, [3,3,3] ) ]   # [4,16]
+    exp2_3 = [
+            ( 1, [1,2,3] ),     # [1,1]
+            ( 2, [2,3,4] ),     # [2,3]
+            ( 1, [4,4,4] ),     # [4.4]
+            ( 3, [3,3,3] ),     # [5.7]
+            ( 5, [1,1,1] ),     # [8,12]
+            ( 4, [3,3,3] ) ]    # [13,16]
+    exp3_2 = [
+            ( 2, [1,2,3] ),     # [1,2]
+            ( 1, [2,3,4] ),     # [3,3]
+            ( 1, [4,4,4] ),     # [4.4]
+            ( 3, [3,3,3] ),     # [5.7]
+            ( 5, [1,1,1] ),     # [8,12]
+            ( 4, [3,3,3] ) ]    # [13,16]
+    exp4_1 = [
+            ( 3, [1,2,3] ),     # [1,3]
+            ( 1, [4,4,4] ),     # [4.4]
+            ( 3, [3,3,3] ),     # [5.7]
+            ( 5, [1,1,1] ),     # [8,12]
+            ( 4, [3,3,3] ) ]    # [13,16]
+    exp3_6 = [
+            ( 2, [1,2,3] ),     # [1,2]
+            ( 1, [2,3,4] ),     # [3,3]
+            ( 4, [4,4,4] ),     # [4.7]
+            ( 1, [2,2,2] ),     # [8,8]
+            ( 4, [1,1,1] ),     # [9,12]
+            ( 4, [3,3,3] ) ]    # [13,16]
     addWeightTestCases = [
-            [ addWeightTestData, [1,2,3], 5, 5, 1, ( 1, 6 ) ],
-            [ addWeightTestData, [1,2,3], 2, 8, 0, ( 0, 6 ) ],
-            [ addWeightTestData, [1,2,3], 9, 3, 2, ( 2, 6 ) ],
+            [ addWeightTestData, [1,2,3], 5, 5, 1, ( 1, exp5_5 ) ],
+            [ addWeightTestData, [1,2,3], 2, 8, 0, ( 0, exp2_8 ) ],
+            [ addWeightTestData, [1,2,3], 9, 3, 2, ( 2, exp9_3 ) ],
             [ addWeightTestData, [1,2,3], 9, 3, 3, None ],
-            [ addWeightTestData, [1,2,3], 1, 14, 0, ( 0, 5 ) ],
-            [ addWeightTestData, [1,2,3], 3, 10, 0, ( 0, 5 ) ],
+            [ addWeightTestData, [1,2,3], 1, 14, 0, ( 0, exp1_14 ) ],
+            [ addWeightTestData, [1,2,3], 3, 10, 0, ( 0, exp3_10 ) ],
             [ addWeightTestData, [1,2,3], 3, 10, 1, None ],
-            [ addWeightTestData, [2,2,2], 9, 4, 0, ( 2, 4 ) ],
-            [ addWeightTestData, [2,2,2], 8, 9, 2, ( 2, 3 ) ],
-            [ addWeightTestData, [2,2,2], 8, 5, 0, ( 2, 2 ) ],
-            [ addWeightTestData, [1,1,1], 2, 3, 0, ( 0, 6 ) ],
-            [ addWeightTestData, [1,1,1], 3, 2, 0, ( 0, 6 ) ],
-            [ addWeightTestData, [1,1,1], 4, 1, 0, ( 1, 5 ) ],
-            [ addWeightTestData, [1,1,1], 3, 6, 0, ( 0, 6 ) ] ]
+            [ addWeightTestData, [2,2,2], 9, 4, 0, ( 2, exp9_4 ) ],
+            [ addWeightTestData, [2,2,2], 8, 9, 2, ( 2, exp8_9 ) ],
+            [ addWeightTestData, [2,2,2], 8, 5, 0, ( 2, exp8_5 ) ],
+            [ addWeightTestData, [1,1,1], 2, 3, 0, ( 0, exp2_3 ) ],
+            [ addWeightTestData, [1,1,1], 3, 2, 0, ( 0, exp3_2 ) ],
+            [ addWeightTestData, [1,1,1], 4, 1, 0, ( 1, exp4_1 ) ],
+            [ addWeightTestData, [1,1,1], 3, 6, 0, ( 0, exp3_6 ) ] ]
     for data, summand, start, width, index, expected in addWeightTestCases:
         weights = Weights(data)
         end = start + width - 1
@@ -157,15 +229,17 @@ def _testAddWeight():
                 print( weights.detail() )
                 raise RuntimeError( "FAILED." )
         else:
-            expectedIndex, subints = expected
+            expectedIndex, expectedData = expected
+            expectedWeights = Weights(expectedData)
             msg += "find index {}.".format(expectedIndex)
             print(msg)
             print( "    {}".format( "-" * ( len(msg) - 4 ) ) )
             print()
-            print( weights.detail() )
+            print( expectedWeights.detail() )
             if ( foundIndex != expectedIndex or
-                    weights.countSubintervals() != subints ):
+                    weights != expectedWeights ):
                 print(foundIndex)
+                print( weights.detail() )
                 raise RuntimeError( "FAILED." )
         print( "--------------------------------------------------------" )
         print()
