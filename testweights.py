@@ -6,6 +6,28 @@ from weights import Weights
 from pairing import Pairing
 
 
+def _testEmpty():
+    #######################################################################
+    print( "============================================================" )
+    print( " Empty weight mapping " )
+    print( "------------------------------------------------------------" )
+    print()
+    empty = Weights()
+    nonEmpty = Weights( [
+            ( 2, [1,2,3] ),     # [1,2]
+            ( 3, [4,5,6] ),     # [3,5]
+            ( 2, [3,4,5] ),     # [6,7]
+            ( 3, [2,3,4] ),     # [8,10]
+            ( 3, [1,2,3] ) ]    # [11,13]
+            )
+    if ( not empty.isEmpty() ) or ( nonEmpty.isEmpty() ):
+        raise RuntimeError( "FAILED." )
+    if ( empty.intervalLength() != 0 ) or ( empty.countSubintervals() != 0 ):
+        raise RuntimeError( "FAILED." )
+    #TODO More tests.
+    return
+
+
 def _testSetZero():
     #######################################################################
     print( "============================================================" )
@@ -313,15 +335,27 @@ def _testTransferBy():
     return
 
 
+def _testExtend():
+    #######################################################################
+    print( "============================================================" )
+    print( " Weights.extend( width, weight ) " )
+    print( "------------------------------------------------------------" )
+    print()
+    #TODO
+    return
+
+
 def _testWeights(testName):
     print()
 
     # Which set of tests are we running?
     knownTestNames = [
             "all",
+            "empty",
             "setZero",
             "addWeight",
-            "transferBy" ]
+            "transferBy",
+            "extend" ]
     if testName not in knownTestNames:
         if testName == "":
             print( "Need to supply a test name." )
@@ -335,12 +369,16 @@ def _testWeights(testName):
         return
 
     # Run the requested set of tests.
+    if testName in { "all", "empty" }:
+        _testEmpty()
     if testName in { "all", "setZero" }:
         _testSetZero()
     if testName in { "all", "addWeight" }:
         _testAddWeight()
     if testName in { "all", "transferBy" }:
         _testTransferBy()
+    if testName in { "all", "extend" }:
+        _testExtend()
 
     # End of test suite.
     print( "============================================================" )

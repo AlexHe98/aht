@@ -607,6 +607,7 @@ class Weights:
         Returns:
             None
         """
+        #TODO Check dimension!
         if self._weights and self._weights[-1][1] == weight:
             # Merge new subinterval with the last subinterval.
             self._weights[-1][0] += width
