@@ -9,7 +9,7 @@ from pairing import Pairing
 def _testEmpty():
     #######################################################################
     print( "============================================================" )
-    print( " Empty weight mapping " )
+    print( " Empty weight mappings " )
     print( "------------------------------------------------------------" )
     print()
     empty = Weights()
@@ -20,11 +20,25 @@ def _testEmpty():
             ( 3, [2,3,4] ),     # [8,10]
             ( 3, [1,2,3] ) ]    # [11,13]
             )
-    if ( not empty.isEmpty() ) or ( nonEmpty.isEmpty() ):
+    print( empty.detail() )
+    print( "Should be empty." )
+    print()
+    if ( not empty.isEmpty() or empty.intervalLength() != 0 or
+            empty.countSubintervals() != 0 ):
         raise RuntimeError( "FAILED." )
-    if ( empty.intervalLength() != 0 ) or ( empty.countSubintervals() != 0 ):
+    empty.transferBy( Pairing( 3, 6, 11, False ) )
+    if not empty.isEmpty():
         raise RuntimeError( "FAILED." )
-    #TODO More tests.
+    print( "--------------------------------------------------------" )
+    print()
+    print( nonEmpty.detail() )
+    print( "Should be non-empty." )
+    print()
+    if ( nonEmpty.isEmpty() or nonEmpty.intervalLength() <= 0 or
+            nonEmpty.countSubintervals() <= 0 ):
+        raise RuntimeError( "FAILED." )
+    print( "--------------------------------------------------------" )
+    print()
     return
 
 
