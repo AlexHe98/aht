@@ -617,7 +617,8 @@ class Weights:
             # Merge new subinterval with the last subinterval.
             self._weights[-1][0] += width
         else:
-            self._weights.append( [ width, weight ] )
+            self._weights.append(
+                    [ self.intervalLength() + width, weight ] )
 
     def contract(self):
         """

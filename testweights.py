@@ -4,6 +4,7 @@ Test suite for the Weights class.
 from sys import argv
 from weights import Weights
 from pairing import Pairing
+from orbiterror import WeightDimensionError
 
 
 def _testEmpty():
@@ -377,11 +378,51 @@ def _testExtend():
             raise RuntimeError( "FAILED." )
         print( "--------------------------------------------------------" )
         print()
-    extendNonEmptyCases = []
-    for data, width, weight, expected in extendNonEmptyCases:
-        #TODO
+    extendTestData = [
+            ( 3, [1,2,3] ),     # [1,3]
+            ( 4, [3,3,3] ),     # [4,7]
+            ( 5, [1,1,1] ),     # [8,12]
+            ( 4, [3,3,3] ) ]    # [13,16]
+    exp333 = [
+            ( 3, [1,2,3] ),     # [1,3]
+            ( 4, [3,3,3] ),     # [4,7]
+            ( 5, [1,1,1] ),     # [8,12]
+            ( 7, [3,3,3] ) ]    # [13,19]
+    exp343 = [
+            ( 3, [1,2,3] ),     # [1,3]
+            ( 4, [3,3,3] ),     # [4,7]
+            ( 5, [1,1,1] ),     # [8,12]
+            ( 4, [3,3,3] ),     # [13,16]
+            ( 3, [3,4,3] ) ]    # [17,19]
+    extendNonEmptyCases = [
+            ( extendTestData, 3, [2,2,3,3], None ),
+            ( extendTestData, 3, [3,3,3], exp333 ),
+            ( extendTestData, 3, [3,4,3], exp343 ) ]
+    for data, width, weight, expectedData in extendNonEmptyCases:
+        weights = Weights(data)
+        print( weights.detail() )
+        msg = "Extend by width {} with weight {}.".format( width, weight )
+        print( "    {}".format(msg) )
+        print( "    {}".format( "-" * len(msg) ) )
         print()
-    #TODO
+        if expectedData is None:
+            print( "Should raise WeightDimensionError." )
+            try:
+                weights.extend( width, weight )
+            except WeightDimensionError as e:
+                print( "    {}".format(e) )
+                print()
+            else:
+                raise RuntimeError( "FAILED." )
+        else:
+            weights.extend( width, weight )
+            expected = Weights(expectedData)
+            print( expected.detail() )
+            if weights != expected:
+                print( weights.detail() )
+                raise RuntimeError( "FAILED." )
+        print( "--------------------------------------------------------" )
+        print()
     return
 
 
