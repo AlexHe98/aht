@@ -106,11 +106,17 @@ class Weights:
             previousWeight = weight
 
     def __str__(self):
-        return ( "A map from {{ 1, ..., {} }} ".format(
-            self.intervalLength() ) +
-            "to weight vectors of dimension {}".format( self._dim ) )
+        if self.isEmpty():
+            return "An empty weight mapping"
+        else:
+            return ( "A map from {{ 1, ..., {} }} ".format(
+                self.intervalLength() ) +
+                "to weight vectors of dimension {}".format( self._dim ) )
 
     def __repr__(self):
+        if self.isEmpty():
+            return "Weights()"
+
         # Reconstruct the data needed to build this map from scratch.
         data = []
         previous = 0
@@ -132,7 +138,8 @@ class Weights:
         description that completely specifies this weight mapping. This text
         always ends with a final newline.
         """
-        msg = ""
+        msg = str(self)
+        msg += "\n{}\n".format( "-" * len(msg) )
         start = 1
         for i in range( len( self._weights ) ):
             end, weight = self._weights[i]

@@ -21,11 +21,14 @@ class Pairings:
         self._pairings = set(pairings)
 
     def __str__(self):
-        return "Order-{} pseudogroup of interval pairings".format(
+        return "An order-{} pseudogroup of interval pairings".format(
                 self.order() )
 
     def __repr__(self):
-        return "Pairings( {} )".format( repr(self._pairings) )
+        if self.isEmpty():
+            return "Pairings()"
+        else:
+            return "Pairings( {} )".format( repr(self._pairings) )
 
     def detail(self):
         """
@@ -36,10 +39,17 @@ class Pairings:
         description that completely specifies this pseudogroup. This text
         always ends with a final newline.
         """
-        msg = ""
+        msg = str(self)
+        msg += "\n{}\n".format( "-" * len(msg) )
         for p in self._pairings:
             msg += "{}\n".format(p)
         return msg
+
+    def isEmpty(self):
+        """
+        Is this the empty pseudogroup of interval pairings?
+        """
+        return (not self._pairings)
 
     def order(self):
         """
