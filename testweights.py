@@ -105,7 +105,7 @@ def _testSetZero():
     expWith1_9 = [
             ( 9, [0,0,0,0] ),   # [1,9]
             ( 2, [1,2,3,4] ) ]  # [10,11]
-    setZeroTestCases = [
+    setZeroCases = [
             [ woutZeros, 4, 1, 1, ( 1, expWout4_1 ) ],
             [ woutZeros, 4, 3, 0, ( 1, expWout4_3 ) ],
             [ woutZeros, 3, 4, 1, ( 1, expWout3_4 ) ],
@@ -123,7 +123,7 @@ def _testSetZero():
             [ withZeros, 3, 5, 0, ( 0, expWith3_5 ) ],
             [ withZeros, 4, 8, 1, ( 1, expWith4_8 ) ],
             [ withZeros, 1, 9, 0, ( 0, expWith1_9 ) ] ]
-    for data, start, width, index, expected in setZeroTestCases:
+    for data, start, width, index, expected in setZeroCases:
         weights = Weights(data)
         end = start + width - 1
         print( weights.detail() )
@@ -238,7 +238,7 @@ def _testAddWeight():
             ( 1, [2,2,2] ),     # [8,8]
             ( 4, [1,1,1] ),     # [9,12]
             ( 4, [3,3,3] ) ]    # [13,16]
-    addWeightTestCases = [
+    addWeightCases = [
             [ addWeightTestData, [1,2,3], 5, 5, 1, ( 1, exp5_5 ) ],
             [ addWeightTestData, [1,2,3], 2, 8, 0, ( 0, exp2_8 ) ],
             [ addWeightTestData, [1,2,3], 9, 3, 2, ( 2, exp9_3 ) ],
@@ -253,7 +253,7 @@ def _testAddWeight():
             [ addWeightTestData, [1,1,1], 3, 2, 0, ( 0, exp3_2 ) ],
             [ addWeightTestData, [1,1,1], 4, 1, 0, ( 1, exp4_1 ) ],
             [ addWeightTestData, [1,1,1], 3, 6, 0, ( 0, exp3_6 ) ] ]
-    for data, summand, start, width, index, expected in addWeightTestCases:
+    for data, summand, start, width, index, expected in addWeightCases:
         weights = Weights(data)
         end = start + width - 1
         print( weights.detail() )
@@ -324,7 +324,7 @@ def _testTransferBy():
             ( 1, [8,8,8] ),     # [4,4]
             ( 1, [7,7,7] ),     # [5,5]
             ( 11, [0,0,0] ) ]   # [6,16]
-    transferByTestCases = [
+    transferByCases = [
             [ transferByTestData, iden.clone(), iden,
                 transferByTestData ],
             [ transferByTestData, reversing.clone(), trimmed,
@@ -335,7 +335,7 @@ def _testTransferBy():
                 nonPeriodicExp ],
             [ transferByTestData, periodic.clone(), periodic,
                 periodicExp ] ]
-    for data, pairing, pairAfter, expectedData in transferByTestCases:
+    for data, pairing, pairAfter, expectedData in transferByCases:
         weights = Weights(data)
         expected = Weights(expectedData)
         print( weights.detail() )
@@ -359,6 +359,28 @@ def _testExtend():
     print( " Weights.extend( width, weight ) " )
     print( "------------------------------------------------------------" )
     print()
+    extendEmptyCases = [
+            ( 4, [1,2,3] ),
+            ( 3, [2,2,3,3] ) ]
+    for width, weight in extendEmptyCases:
+        weights = Weights()
+        print( weights.detail() )
+        msg = "Extend by width {} with weight {}.".format( width, weight )
+        print( "    {}".format(msg) )
+        print( "    {}".format( "-" * len(msg) ) )
+        print()
+        weights.extend( width, weight )
+        expected = Weights( [ [width, weight] ] )
+        print( expected.detail() )
+        if weights != expected:
+            print( weights.detail() )
+            raise RuntimeError( "FAILED." )
+        print( "--------------------------------------------------------" )
+        print()
+    extendNonEmptyCases = []
+    for data, width, weight, expected in extendNonEmptyCases:
+        #TODO
+        print()
     #TODO
     return
 
