@@ -213,7 +213,8 @@ class Pairing:
         Is this pairing a restriction of the identity map?
 
         If the answer is not already known, then this routine will calculate
-        it and cache the result.
+        it and cache the result. The calculation requires O(log(c))-time,
+        where c = self.rangeStart().
 
         Returns:
             True if and only if this Pairing is an identity map.

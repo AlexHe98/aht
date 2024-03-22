@@ -18,7 +18,10 @@ class Pairings:
         If no pairings are given, then the initialised pseudogroup will be
         empty.
         """
-        self._pairings = set(pairings)
+        #TODO We need to be able to perform insertions and deletions, and do
+        #   not need random access, so it would make more sense for this to
+        #   be a linked list than a Python list.
+        self._pairings = list(pairings)
 
     def __str__(self):
         return "An order-{} pseudogroup of interval pairings".format(
@@ -56,3 +59,25 @@ class Pairings:
         Returns the number of interval pairings in this pseudogroup.
         """
         return len(self._pairings)
+
+    def deleteIdentityPairings(self):
+        """
+        Deletes all pairings in this pseudogroup that are restrictions of the
+        identity.
+
+        Let k = self.order(), and let N denote the largest integer in the
+        range of any of the pairings in this pseudogroup. This routine runs
+        in O(k*log(N))-time.
+
+        Returns:
+            None
+        """
+        #TODO This implementation is O(k*log(N))-time for self._pairings
+        #   represented as a Python list; it does not preserve the ordering
+        #   of the pairings that are not deleted. We could get the same
+        #   running time for a linked list with a simpler algorithm that also
+        #   preserves the ordering.
+        for i in range( self.order() - 1, -1, -1 ):
+            if self._pairings[i].isIdentity():
+                self._pairings[i] = self._pairings[-1]
+                self._pairings.pop()
