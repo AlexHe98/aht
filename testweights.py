@@ -23,8 +23,10 @@ def _testEmpty():
     print( empty.detail() )
     print( "Should be empty." )
     print()
-    if ( not empty.isEmpty() or empty.intervalLength() != 0 or
-            empty.countSubintervals() != 0 ):
+    if ( not empty.isEmpty()
+            or empty.intervalLength() != 0
+            or empty.countSubintervals() != 0
+            or empty.dimension() is not None ):
         raise RuntimeError( "FAILED." )
     empty.transferBy( Pairing( 3, 6, 11, False ) )
     if not empty.isEmpty():
@@ -34,8 +36,10 @@ def _testEmpty():
     print( nonEmpty.detail() )
     print( "Should be non-empty." )
     print()
-    if ( nonEmpty.isEmpty() or nonEmpty.intervalLength() <= 0 or
-            nonEmpty.countSubintervals() <= 0 ):
+    if ( nonEmpty.isEmpty()
+            or nonEmpty.intervalLength() <= 0
+            or nonEmpty.countSubintervals() <= 0
+            or nonEmpty.dimension is None ):
         raise RuntimeError( "FAILED." )
     print( "--------------------------------------------------------" )
     print()

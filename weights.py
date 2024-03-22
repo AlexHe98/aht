@@ -58,7 +58,7 @@ class Weights:
     #       denote the weights assigned to [p,q] and [pp,qq], respectively.
     #       Popping the ith entry of L corresponds to merging [p,q] and
     #       [pp,qq] into a single subinterval [p,qq] with weight ww.
-    def __init__( self, data=None ):
+    def __init__( self, data=[] ):
         """
         Uses the given data to initialise a map from { 1, ..., N } to weight
         vectors of dimension d, for some positive integers N and d.
@@ -83,7 +83,7 @@ class Weights:
         """
         total = 0
         self._weights = []
-        if data is None:
+        if not data:
             self._dim = None
             return
         previousWeight = []
@@ -162,12 +162,11 @@ class Weights:
         Returns the dimension of the vectors in the image of this weight
         mapping.
 
-        If this weight mapping is empty, then the dimension might not have
-        been defined yet, which means that this routine might return None.
+        If this weight mapping is empty, then this routine returns None.
 
         Returns:
-            The dimension of the weight vectors, or None if this dimension
-            has not been defined yet.
+            The dimension of the weight vectors, or None if this weight
+            mapping is empty.
         """
         return self._dim
 
@@ -244,6 +243,7 @@ class Weights:
         Let m = self.countSubintervals(). This routine runs in O(m^2)-time.
 
         Pre-condition:
+        --> This weight mapping is non-empty.
         --> The parameters start and width are positive integers such that
             start + width - 1 <= self.intervalLength().
 
@@ -339,6 +339,7 @@ class Weights:
         O(C*m)-time.
 
         Pre-condition:
+        --> This weight mapping is non-empty.
         --> The given weight is a length-d list of non-negative integers,
             where d = self.dimension().
         --> The parameters start and width are positive integers such that
@@ -440,9 +441,9 @@ class Weights:
         Transfers the weights in the range of the given pairing to smaller
         orbit representatives.
 
-        The transfer operation has no effect if the given pairing is a
-        restriction of the identity map. Otherwise, this operation proceeds
-        in one of three ways:
+        The transfer operation has no effect if this weight mapping is empty,
+        or if the given pairing is a restriction of the identity map.
+        Otherwise, this operation proceeds in one of three ways:
         --> If the given pairing is orientation-reversing, then the very
             first step is to ensure, by trimming if necessary, that its
             domain and range are disjoint. We then use the inverse of this
@@ -590,9 +591,8 @@ class Weights:
         Extends the domain of this weight mapping by the given width, and
         assigns the given weight to the new elements of the domain.
 
-        This routine raises WeightDimensionError if:
-        --> self.dimension() is not None; and
-        --> len(weight) != self.dimension().
+        This routine raises WeightDimensionError if this weight mapping is
+        non-empty and len(weight) != self.dimension().
 
         Pre-condition:
         --> The given width is a positive integer.
@@ -607,8 +607,13 @@ class Weights:
         Returns:
             None
         """
-        #TODO Check dimension!
-        if self._weights and self._weights[-1][1] == weight:
+        # Need to either set or check the dimension.
+        if self.isEmpty():
+            self._dim = len(weight)
+            self._weights.append( [ width, weight ] )
+        elif len(weight) != self.dimension():
+            raise WeightDimensionError( self.dimension(), len(weight) )
+        elif self._weights[-1][1] == weight:
             # Merge new subinterval with the last subinterval.
             self._weights[-1][0] += width
         else:
