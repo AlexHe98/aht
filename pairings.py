@@ -81,3 +81,25 @@ class Pairings:
             if self._pairings[i].isIdentity():
                 self._pairings[i] = self._pairings[-1]
                 self._pairings.pop()
+
+    def findStaticIntervals(self):
+        """
+        Returns a list containing details of all static intervals defined by
+        this pseudogroup of pairings.
+
+        An interval [r,s] is static if it is disjoint from the domain and
+        range of every pairing in this pseudogroup.
+
+        Each element of the returned list will be a list of the form
+        [ start, end, width ], where:
+        --> I = [start,end] is a static interval that is not contained inside
+            a larger static interval; and
+        --> width = end - start + 1 (i.e., it is the width of I).
+        These elements will be arranged in ascending order in the returned
+        list.
+
+        Returns:
+            A list containing data as detailed above.
+        """
+        #TODO
+        pass
