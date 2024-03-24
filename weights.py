@@ -7,8 +7,23 @@ from orbiterror import *
 
 def _vectorSum( v, w ):
     """
+    Calculates the sum of the vectors v and w.
+
+    The given vectors v and w should be represented as lists of integers.
+    Likewise, the returned vector will be represented as a list of integers.
+
+    Let d = len(v), and let D be an integer such that all the entries of v 
+    and w are at most D. This routine runs in O(d*log(D))-time.
+
     Pre-condition:
     --> len(v) == len(w).
+
+    Parameters:
+    --> v   A list of integers representing one of the two vector summands.
+    --> w   A list of integers representing the other vector summand.
+
+    Returns:
+        A list of integers representing the sum of v and w.
     """
     return [ v[i] + w[i] for i in range( len(v) ) ]
 
@@ -28,6 +43,9 @@ class Weights:
             --> each w<i> is a non-negative integer vector of dimension d,
                 for some constant d, which represents the weight assigned to
                 each element of the subinterval [p<i>, p<i+1>-1].
+
+    The total weight of a weight mapping, specified in the above format, is
+    given by the sum of the taxicab norms of w<0>, ..., w<m - 1>.
     """
     #NOTE This class encodes each subinterval S of constant weight using a
     #   two-element list [ x, w ], where:
@@ -332,11 +350,15 @@ class Weights:
         If the given index is 0 (the default), then the search is guaranteed
         to succeed (assuming that start <= self.intervalLength()).
 
-        Let m = self.countSubintervals(), and let C denote the worst-case
-        complexity of adding the given weight to any particular vector in the
-        image of this weight mapping (roughly, C scales logarithmically with
-        the size of the integers in the weight vectors). This routine runs in
-        O(C*m)-time.
+        Let m = self.countSubintervals(), let d = self.dimension(), and let D
+        be the total weight of this weight mapping. This routine runs in
+        O(m*d*log(D))-time in the worst case.
+
+        Under certain circumstances, we can give a tighter bound on the
+        running time of this routine. Suppose we know in advance that
+        (i - index) is bounded above by a constant. Then the running time is
+        O(m + M*d*log(D))-time, where M is the number of constant-weight
+        subintervals that intersect the interval [start,end].
 
         Pre-condition:
         --> This weight mapping is non-empty.
@@ -344,6 +366,10 @@ class Weights:
             where d = self.dimension().
         --> The parameters start and width are positive integers such that
             start + width - 1 <= self.intervalLength().
+
+        TODO:
+        --> Optimise: improve running time from O(m + M*d*log(D)) to
+                O(M*d*log(D)).
 
         Parameters:
         --> weight  The weight to be added to the specified interval.
@@ -359,7 +385,9 @@ class Weights:
             start point, or None if this routine failed to find the required
             subinterval.
         """
-        # In O(m)-time, find the subinterval [p,q] that contains start.
+        #NOTE Finding the subinterval [p,q] that contains start requires
+        #   O(m)-time in the worst case, but this becomes O(1) if (i - index)
+        #   is known to be bounded by a constant.
         data = self._findSubinterval( start, index )
         if data is None:
             return None
@@ -394,7 +422,7 @@ class Weights:
 
         # For each subinterval lying entirely inside [start,end], adding the
         # given weight is straightforward.
-        #NOTE This step requires O(C*m)-time.
+        #NOTE This step requires O(M*d*log(D))-time.
         while i < self.countSubintervals() and end >= self._weights[i][0]:
             currentEnd, assignedWeight = self._weights[i]
             self._weights[i] = [ currentEnd,
@@ -418,8 +446,10 @@ class Weights:
         #           left to do unless the weight assigned to end is now equal
         #           to the weight assigned to S, in which case we need to
         #           merge S with the (i-1)st subinterval.
-        #NOTE In the worst case, this last step requires O(C+m)-time, since
-        #   it might involve either a pop or an insertion operation.
+        #TODO In the worst case, this last step currently requires
+        #   O(m + d*log(D))-time, since it might involve either a pop or an
+        #   insertion operation. With a linked list, this could be improved
+        #   to O(d*log(D))-time.
         if i == self.countSubintervals():
             return foundIndex
         currentWeight = self._weights[i][1]
@@ -456,11 +486,9 @@ class Weights:
             periodicity to transfer all the weights in the periodic interval
             I to the first p points in I.
 
-        Let m = self.countSubintervals(), and let C denote the worst-case
-        complexity of adding two arbitrary weights in the image of this
-        weight mapping (roughly, C scales logarithmically with the size of
-        the integers in the weight vectors). This routine runs in
-        O(C*m^2)-time.
+        Let m = self.countSubintervals(), let d = self.dimension(), and let D
+        be the total weight of this weight mapping. This routine runs in
+        O(m^2*d*log(D))-time.
 
         Pre-condition:
         --> The pairing parameter is an instance of Pairing.
@@ -470,7 +498,8 @@ class Weights:
             (and hence modifying) the given pairing.
 
         TODO:
-        --> Optimise: improve running time from O(C*m^2) to O(C*m).
+        --> Optimise: improve running time from O(m^2*d*log(D)) to
+                O(m*d*log(D)).
 
         Parameters:
         --> pairing     The pairing by which to transfer weights.
@@ -484,8 +513,8 @@ class Weights:
 
         # Handle the non-periodic case first, since this case is relatively
         # straightforward.
-        #TODO This case currently requires O(C*m^2)-time, but it should be
-        #   possible to improve it to O(C*m)-time.
+        #TODO This case currently requires O(m^2*d*log(D))-time, but it
+        #   should be possible to improve it to O(m*d*log(D))-time.
         if not pairing.periodicInterval():
             # Find all the destinations for the weights that will be
             # transferred out of the range of the given pairing.
@@ -520,9 +549,9 @@ class Weights:
             #   be optimised to O(m)-time.
             self.setZero( pairing.rangeStart(), pairing.width() )
             #TODO We need to make O(m) calls to self.addWeight(), requiring
-            #   O(C*m^2)-time in total.
-            #       Can possibly improve to O(C*m)-time by dividing into
-            #   cases depending on whether the given pairing is
+            #   O(m^2*d*log(D))-time in total.
+            #       Can possibly improve to O(m*d*log(D))-time by dividing
+            #   into cases depending on whether the given pairing is
             #   orientation-preserving, and then exploiting what we know
             #   about the order of the subintervals to which we are adding
             #   weight.
@@ -531,8 +560,8 @@ class Weights:
             return
 
         # Now handle the periodic case.
-        #NOTE This case also currently requires O(C*m^2)-time, but again it
-        #   should be possible to improve it to O(C*m)-time.
+        #NOTE This case also currently requires O(m^2*d*log(D))-time, but
+        #   again it should be possible to improve it to O(m*d*log(D))-time.
         period = pairing.periodicInterval()[2]
         transferInstructions = []
         a = pairing.domainStart()
@@ -580,8 +609,8 @@ class Weights:
         #   this can be optimised to O(m)-time.
         self.setZero( pairing.rangeStart(), pairing.width() )
         #TODO We need to make O(m) calls to self.addWeight(), requiring
-        #   O(C*m^2)-time in total. Similar to above, this can possibly be
-        #   improved to O(C*m)-time.
+        #   O(m^2*d*log(D))-time in total. Similar to above, this can possibly
+        #   be improved to O(m*d*log(D))-time.
         for weight, start, width in transferInstructions:
             self.addWeight( weight, start, width )
         return
