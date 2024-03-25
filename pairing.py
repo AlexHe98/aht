@@ -528,6 +528,7 @@ class Pairing:
         if shiftRan:
             self._c -= width
             self._d -= width
+        self._resetCache()
         return True
 
     def truncate( self, newBound ):
@@ -631,6 +632,7 @@ class Pairing:
             None
         """
         c = start + period
+        #NOTE _setPairing() resets the cache.
         self._setPairing( start, c, end - c + 1, True )
 
     def mergeWith( self, other ):
@@ -676,6 +678,7 @@ class Pairing:
         start = min( myInterval[0], yourInterval[0] )
         end = max( myInterval[1], yourInterval[1] )
         period = gcd( myInterval[2], yourInterval[2] )
+        #NOTE _setPeriodic() resets the cache.
         self._setPeriodic( start, end, period )
         return True
 
@@ -751,5 +754,6 @@ class Pairing:
         # Ensure that a <= c before we set the new properties.
         if a > c:
             a, c = c, a
+        #NOTE _setPairing() resets the cache.
         self._setPairing( a, c, self.width(), preserving )
         return True
