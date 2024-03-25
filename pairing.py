@@ -439,6 +439,71 @@ class Pairing:
                     self._periodicInterval = ( self._a, self._d, period )
         return self._periodicInterval
 
+    def fixedPoints( self, start, width ):
+        """
+        Returns details of all the points in the interval [start,end], where
+        end = start + width - 1, that are fixed by this pairing.
+
+        In detail, after possibly trimming this pairing, the fixed points in
+        [start,end] are precisely the points left over after deleting the
+        domain and range of this pairing. This splits [start,end] into up to
+        three intervals of fixed points.
+
+        This routine returns a list containing details of each of these
+        intervals of fixed points. Specifically, each element of the returned
+        list will be a list of the form [ fixedStart, fixedEnd, fixedWidth ],
+        where:
+        --> I = [fixedStart,fixedEnd] is one of the intervals of fixed
+            points; and
+        --> fixedWidth = fixedEnd - fixedStart + 1 (i.e., it is the width of
+            the interval I).
+        These elements will be arranged in ascending order in the returned
+        list.
+
+        Warning:
+        --> As mentioned above, this pairing might get trimmed (and hence
+            modified) as a side-effect as a side-effect of running this
+            routine.
+
+        Pre-condition:
+        --> The parameters start and width are both positive integers.
+
+        Parameters:
+        --> start   The start point of the interval in which to search for
+                    fixed points.
+        --> width   The width of the interval in which to search for fixed
+                    points.
+
+        Returns:
+            A list describing the fixed points, in the format specified
+            above.
+        """
+        self.trim()
+        end = start + width - 1
+        fixed = []
+
+        # Find fixed points that occur before the domain of this pairing.
+        if start < self._a:
+            fixedEnd = self._a - 1
+            fixed.append(
+                    [ start, fixedEnd, fixedEnd - start + 1 ] )
+
+        # Find fixed points that occur "in the middle" of this pairing.
+        fixedStart = max( start, self._b + 1 )
+        fixedEnd = min( end, self._c - 1 )
+        if fixedStart <= fixedEnd:
+            fixed.append(
+                    [ fixedStart, fixedEnd, fixedEnd - fixedStart + 1 ] )
+
+        # Find fixed points that occur after the range of this pairing.
+        if end > self._d:
+            fixedStart = self._d + 1
+            fixed.append(
+                    [ fixedStart, end, end - fixedStart + 1 ] )
+
+        # Done!
+        return fixed
+
     def _contractImpl( self, start, width ):
         """
         Provides instructions on how to contract the interval [start,end],
