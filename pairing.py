@@ -101,14 +101,38 @@ class Pairing:
         self._resetCache()
         self._width = width
 
+    def _resetWidth(self):
+        """
+        Resets cached width to None.
+        """
+        self._width = None
+
+    def _resetTranslationDistance(self):
+        """
+        Resets cached translation distance to None.
+        """
+        self._translationDistance = None
+
+    def _resetIsIdentity(self):
+        """
+        Resets cached "is identity" property to None.
+        """
+        self._isIdentity = None
+
+    def _resetPeriodicInterval(self):
+        """
+        Resets cached periodic interval to None.
+        """
+        self._periodicInterval = None
+
     def _resetCache(self):
         """
         Resets cached properties to None.
         """
-        self._width = None
-        self._translationDistance = None
-        self._isIdentity = None
-        self._periodicInterval = None
+        self._resetWidth()
+        self._resetTranslationDistance()
+        self._resetIsIdentity()
+        self._resetPeriodicInterval()
 
     def __str__(self):
         if self._preserving:
@@ -593,7 +617,13 @@ class Pairing:
         if shiftRan:
             self._c -= width
             self._d -= width
-        self._resetCache()
+
+        # Contraction preserves the following cached properties, so they do
+        # not need to be reset:
+        #   --> width
+        #   --> isIdentity
+        self._resetTranslationDistance()
+        self._resetPeriodicInterval()
         return True
 
     def truncate( self, newBound ):
@@ -634,19 +664,29 @@ class Pairing:
             True if and only if the truncation is legal.
         """
         if newBound < self._c or newBound >= self._d:
+            # Truncation is always impossible in these cases.
             return False
-        if self.isOrientationPreserving():
+        elif self.isOrientationPreserving():
+            # We have already ruled out the cases where truncation is
+            # impossible.
             self._b = self._b - ( self._d - newBound )
             self._d = newBound
-            self._resetCache()
-            return True
+        elif self._c <= self._b:
+            # Orientation-reversing, but truncation is not possible because
+            # the domain and range overlap.
+            return False
         else:
-            if self._c <= self._b:
-                return False
+            # Orientation-reversing; truncation possible.
             self._a = self._a + self._d - newBound
             self._d = newBound
-            self._resetCache()
-            return True
+
+        # Truncation preserves the following cached properties, so they
+        # do not need to be reset:
+        #   --> translationDistance
+        #   --> isIdentity
+        self._resetWidth()
+        self._resetPeriodicInterval()
+        return True
 
     def trim(self):
         """
@@ -664,11 +704,18 @@ class Pairing:
         """
         if self._preserving or self._b < self._c:
             return False
+
         # Ensure that b is strictly less than the average of a and d, and
         # that c is strictly greater than the average.
         self._b = ( self._a + self._d - 1 ) // 2
         self._c = ( self._a + self._d + 2 ) // 2
-        self._resetCache()
+
+        # Trimming preserves the following cached properties, so they do not
+        # need to be reset:
+        #   --> translationDistance (orientation-reversing, so always -1)
+        #   --> isIdentity (orientation-reversing, so always False)
+        #   --> periodicInterval (orientation-reversing, so always empty).
+        self._resetWidth()
         return True
 
     def _setPeriodic( self, start, end, period ):
@@ -697,8 +744,12 @@ class Pairing:
             None
         """
         c = start + period
-        #NOTE _setPairing() resets the cache.
+        # The _setPairing() routine handles resetting the cache. However, we
+        # already know the details of the periodic interval, so we might as
+        # well remember this data.
         self._setPairing( start, c, end - c + 1, True )
+        self._periodicInterval = ( start, end, period )
+        self._isIdentity = False
 
     def mergeWith( self, other ):
         """
@@ -743,7 +794,7 @@ class Pairing:
         start = min( myInterval[0], yourInterval[0] )
         end = max( myInterval[1], yourInterval[1] )
         period = gcd( myInterval[2], yourInterval[2] )
-        #NOTE _setPeriodic() resets the cache.
+        # The _setPeriodic() routine handles resetting the cache.
         self._setPeriodic( start, end, period )
         return True
 
@@ -819,6 +870,6 @@ class Pairing:
         # Ensure that a <= c before we set the new properties.
         if a > c:
             a, c = c, a
-        #NOTE _setPairing() resets the cache.
+        # The _setPairing() routine handles resetting the cache.
         self._setPairing( a, c, self.width(), preserving )
         return True
