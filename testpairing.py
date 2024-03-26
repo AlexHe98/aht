@@ -327,6 +327,77 @@ def _testPeriodicInterval():
     return
 
 
+def _testFixedPoints():
+    #######################################################################
+    print( "============================================================" )
+    print( " Pairing.fixedPoints( start, width ) " )
+    print( "------------------------------------------------------------" )
+    print()
+    apart = Pairing( 6, 11, 4, True )       # [6,9] <-> [11,14]
+    apart2_3 = [
+            [2,4,3] ]
+    apart3_7 = [
+            [3,5,3] ]
+    apart4_8 = [
+            [4,5,2],
+            [10,10,1] ]
+    apart4_13 = [
+            [4,5,2],
+            [10,10,1],
+            [15,16,2] ]
+    apart6_3 = []
+    apart7_4 = [
+            [10,10,1] ]
+    apart9_8 = [
+            [10,10,1],
+            [15,16,2] ]
+    apart10_2 = [
+            [10,10,1] ]
+    apart10_6 = [
+            [10,10,1],
+            [15,15,1] ]
+    apart12_3 = []
+    apart13_5 = [
+            [15,17,3] ]
+    apart16_3 = [
+            [16,18,3] ]
+    touch = Pairing( 6, 10, 4, True )       # [6,9] <-> [10,13]
+    overlap = Pairing( 6, 9, 4, True )      # [6,9] <-> [9,12]
+    reverse = Pairing( 6, 8, 5, False )     # [6,10] <-> [8,12]
+    trimmed = reverse.clone()
+    trimmed.trim()                          # [6,8] <-> [10,12]
+    fixedPointsCases = [
+            [ apart.clone(), 2, 3, apart, apart2_3 ],
+            [ apart.clone(), 3, 7, apart, apart3_7 ],
+            [ apart.clone(), 4, 8, apart, apart4_8 ],
+            [ apart.clone(), 4, 13, apart, apart4_13 ],
+            [ apart.clone(), 6, 3, apart, apart6_3 ],
+            [ apart.clone(), 7, 4, apart, apart7_4 ],
+            [ apart.clone(), 9, 8, apart, apart9_8 ],
+            [ apart.clone(), 10, 2, apart, apart10_2 ],
+            [ apart.clone(), 10, 6, apart, apart10_6 ],
+            [ apart.clone(), 12, 3, apart, apart12_3 ],
+            [ apart.clone(), 13, 5, apart, apart13_5 ],
+            [ apart.clone(), 16, 3, apart, apart16_3 ] ]
+    for pairing, start, width, pairingAfter, fixed in fixedPointsCases:
+        msg = "{}\n    Inside [{},{}], ".format(
+                pairing, start, start + width - 1 )
+        if not fixed:
+            print( msg + "there should be no fixed points." )
+        else:
+            print( msg + "the fixed points should be described by:" )
+            for f in fixed:
+                print( "        {}".format(f) )
+        computed = pairing.fixedPoints( start, width )
+        if computed != fixed:
+            print(computed)
+            raise RuntimeError( "FAILED." )
+        if pairing != pairingAfter:
+            raise RuntimeError( "FAILED." )
+        print()
+    return
+
+
 def _testContract():
     #######################################################################
     print( "============================================================" )
@@ -535,6 +606,7 @@ def _testPairing(testName):
             "imageStart",
             "inverseImageStart",
             "periodicInterval",
+            "fixedPoints",
             "contract",
             "truncate",
             "trim",
@@ -571,6 +643,8 @@ def _testPairing(testName):
         _testInverseImageStart()
     if testName in { "all", "periodicInterval" }:
         _testPeriodicInterval()
+    if testName in { "all", "fixedPoints" }:
+        _testFixedPoints()
     if testName in { "all", "contract" }:
         _testContract()
     if testName in { "all", "truncate" }:

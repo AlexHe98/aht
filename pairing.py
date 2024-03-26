@@ -508,7 +508,7 @@ class Pairing:
 
         # Find fixed points that occur before the domain of this pairing.
         if start < self._a:
-            fixedEnd = self._a - 1
+            fixedEnd = min( end, self._a - 1 )
             fixed.append(
                     [ start, fixedEnd, fixedEnd - start + 1 ] )
 
@@ -521,7 +521,7 @@ class Pairing:
 
         # Find fixed points that occur after the range of this pairing.
         if end > self._d:
-            fixedStart = self._d + 1
+            fixedStart = max( start, self._d + 1 )
             fixed.append(
                     [ fixedStart, end, end - fixedStart + 1 ] )
 
