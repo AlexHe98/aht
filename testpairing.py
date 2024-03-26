@@ -362,10 +362,61 @@ def _testFixedPoints():
     apart16_3 = [
             [16,18,3] ]
     touch = Pairing( 6, 10, 4, True )       # [6,9] <-> [10,13]
-    overlap = Pairing( 6, 9, 4, True )      # [6,9] <-> [9,12]
+    touch2_3 = [
+            [2,4,3] ]
+    touch3_6 = [
+            [3,5,3] ]
+    touch4_10 = [
+            [4,5,2] ]
+    touch4_11 = [
+            [4,5,2],
+            [14,14,1] ]
+    touch7_3 = []
+    touch9_3 = []
+    touch9_7 = [
+            [14,15,2] ]
+    touch10_4 = []
+    touch10_7 = [
+            [14,16,3] ]
+    touch14_3 = [
+            [14,16,3] ]
     reverse = Pairing( 6, 8, 5, False )     # [6,10] <-> [8,12]
     trimmed = reverse.clone()
     trimmed.trim()                          # [6,8] <-> [10,12]
+    reverse2_3 = [
+            [2,4,3] ]
+    reverse3_4 = [
+            [3,5,3] ]
+    reverse4_6 = [
+            [4,5,2],
+            [9,9,1] ]
+    reverse4_7 = [
+            [4,5,2],
+            [9,9,1] ]
+    reverse5_10 = [
+            [5,5,1],
+            [9,9,1],
+            [13,14,2] ]
+    reverse6_3 = []
+    reverse6_4 = [
+            [9,9,1] ]
+    reverse7_6 = [
+            [9,9,1] ]
+    reverse7_8 = [
+            [9,9,1],
+            [13,14,2] ]
+    reverse9_1 = [
+            [9,9,1] ]
+    reverse9_3 = [
+            [9,9,1] ]
+    reverse9_7 = [
+            [9,9,1],
+            [13,15,3] ]
+    reverse11_2 = []
+    reverse12_4 = [
+            [13,15,3] ]
+    reverse14_3 = [
+            [14,16,3] ]
     fixedPointsCases = [
             [ apart.clone(), 2, 3, apart, apart2_3 ],
             [ apart.clone(), 3, 7, apart, apart3_7 ],
@@ -378,7 +429,32 @@ def _testFixedPoints():
             [ apart.clone(), 10, 6, apart, apart10_6 ],
             [ apart.clone(), 12, 3, apart, apart12_3 ],
             [ apart.clone(), 13, 5, apart, apart13_5 ],
-            [ apart.clone(), 16, 3, apart, apart16_3 ] ]
+            [ apart.clone(), 16, 3, apart, apart16_3 ],
+            [ touch.clone(), 2, 3, touch, touch2_3 ],
+            [ touch.clone(), 3, 6, touch, touch3_6 ],
+            [ touch.clone(), 4, 10, touch, touch4_10 ],
+            [ touch.clone(), 4, 11, touch, touch4_11 ],
+            [ touch.clone(), 7, 3, touch, touch7_3 ],
+            [ touch.clone(), 9, 3, touch, touch9_3 ],
+            [ touch.clone(), 9, 7, touch, touch9_7 ],
+            [ touch.clone(), 10, 4, touch, touch10_4 ],
+            [ touch.clone(), 10, 7, touch, touch10_7 ],
+            [ touch.clone(), 14, 3, touch, touch14_3 ],
+            [ reverse.clone(), 2, 3, trimmed, reverse2_3 ],
+            [ trimmed.clone(), 3, 4, trimmed, reverse3_4 ],
+            [ reverse.clone(), 4, 6, trimmed, reverse4_6 ],
+            [ trimmed.clone(), 4, 7, trimmed, reverse4_7 ],
+            [ reverse.clone(), 5, 10, trimmed, reverse5_10 ],
+            [ trimmed.clone(), 6, 3, trimmed, reverse6_3 ],
+            [ reverse.clone(), 6, 4, trimmed, reverse6_4 ],
+            [ trimmed.clone(), 7, 6, trimmed, reverse7_6 ],
+            [ reverse.clone(), 7, 8, trimmed, reverse7_8 ],
+            [ trimmed.clone(), 9, 1, trimmed, reverse9_1 ],
+            [ reverse.clone(), 9, 3, trimmed, reverse9_3 ],
+            [ trimmed.clone(), 9, 7, trimmed, reverse9_7 ],
+            [ reverse.clone(), 11, 2, trimmed, reverse11_2 ],
+            [ trimmed.clone(), 12, 4, trimmed, reverse12_4 ],
+            [ reverse.clone(), 14, 3, trimmed, reverse14_3 ] ]
     for pairing, start, width, pairingAfter, fixed in fixedPointsCases:
         msg = "{}\n    Inside [{},{}], ".format(
                 pairing, start, start + width - 1 )
