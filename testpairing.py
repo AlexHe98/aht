@@ -72,19 +72,41 @@ def _testEq():
     return
 
 
+def _testWidth():
+    #######################################################################
+    print( "============================================================" )
+    print( " Pairing.width() " )
+    print( "------------------------------------------------------------" )
+    print()
+    #TODO
+    return
+
+
 def _testTranslationDistance():
     #######################################################################
     print( "============================================================" )
     print( " Pairing.translationDistance() " )
     print( "------------------------------------------------------------" )
     print()
-    preserving3 = Pairing( 2, 5, 12, True )
-    preserving8 = Pairing( 3, 11, 4, True )
-    reversing = Pairing( 1, 5, 5, False )
+    preserving3 = Pairing( 2, 5, 12, True )     # [2,13] <-> [5,16]
+    preserving8 = Pairing( 3, 11, 4, True )     # [3,6] <-> [11,14]
+    reversing = Pairing( 1, 5, 5, False )       # [1,5] <-> [5,9]
+    contract = preserving8.clone()
+    contract.contract( 7, 4 )                   # [3,6] <-> [7,10]
+    truncPres = preserving3.clone()
+    truncPres.truncate(12)                      # [2,9] <-> [5,12]
+    trim = reversing.clone()
+    trim.trim()                                 # [1,4] <-> [6,9]
+    truncRev = trim.clone()
+    truncRev.truncate(7)                        # [3,4] <-> [6,7]
     translationDistanceTestCases = [
             [ preserving3, 3 ],
             [ preserving8, 8 ],
-            [ reversing, -1 ] ]
+            [ reversing, -1 ],
+            [ contract, 4 ],
+            [ truncPres, 3 ],
+            [ trim, -1 ],
+            [ truncRev, -1 ] ]
     for pairing, distance in translationDistanceTestCases:
         msg = "{}\n    Should have ".format(pairing)
         if distance < 0:
@@ -675,6 +697,7 @@ def _testPairing(testName):
             "all",
             "periodicPairing",
             "eq",
+            "width",
             "translationDistance",
             "domainRange",
             "preserving",
@@ -705,6 +728,8 @@ def _testPairing(testName):
         _testPeriodicPairing()
     if testName in { "all", "eq" }:
         _testEq()
+    if testName in { "all", "width" }:
+        _testWidth()
     if testName in { "all", "translationDistance" }:
         _testTranslationDistance()
     if testName in { "all", "domainRange" }:
