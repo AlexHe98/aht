@@ -321,12 +321,12 @@ def _testPeriodicInterval():
     print( " Pairing.periodicInterval() " )
     print( "------------------------------------------------------------" )
     print()
-    nonPeriodic = Pairing( 2, 6, 3, True )
-    periodic1 = periodicPairing( 1, 6, 3 )
-    periodic2 = periodicPairing( 2, 10, 4 )
-    periodic5 = periodicPairing( 5, 13, 2 )
-    periodic6 = periodicPairing( 6, 19, 6 )
-    periodic7 = periodicPairing( 7, 16, 3 )
+    nonPeriodic = Pairing( 2, 6, 3, True )  # [2,4] <-> [6,8]
+    periodic1 = Pairing( 1, 4, 3, True )    # [1,3] <-> [4,6], period 3
+    periodic2 = Pairing( 2, 6, 5, True )    # [2,6] <-> [6,10], period 4
+    periodic5 = Pairing( 5, 7, 7, True )    # [5,11] <-> [7,13], period 2
+    periodic6 = Pairing( 6, 12, 8, True )   # [6,13] <-> [12,19], period 6
+    periodic7 = Pairing( 7, 10, 7, True )   # [7,13] <-> [10,16], period 3
     periodicIntervalTestCases = [
             [ nonPeriodic, () ],
             [ periodic1, ( 1, 6, 3 ) ],
