@@ -88,7 +88,7 @@ def _testTranslationDistance():
     print( " Pairing.translationDistance() " )
     print( "------------------------------------------------------------" )
     print()
-    preserving3 = Pairing( 2, 5, 12, True )     # [2,13] <-> [5,16]
+    preserving3 = Pairing( 2, 5, 12, True )     # [2,13] <-> [5,16], period 3
     preserving8 = Pairing( 3, 11, 4, True )     # [3,6] <-> [11,14]
     reversing = Pairing( 1, 5, 5, False )       # [1,5] <-> [5,9]
     contract = preserving8.clone()
@@ -99,6 +99,16 @@ def _testTranslationDistance():
     trim.trim()                                 # [1,4] <-> [6,9]
     truncRev = trim.clone()
     truncRev.truncate(7)                        # [3,4] <-> [6,7]
+    merge = periodicPairing( 6, 21, 6 )
+    merge.mergeWith(preserving3)                # [2,18] <-> [5,21], period 3
+    transPP = Pairing( 5, 12, 4, True )
+    transPP.transmitBy(preserving3)             # [2,5] <-> [3,6], period 1
+    transRP = Pairing( 5, 12, 4, False )
+    transRP.transmitBy(preserving3)             # [2,5] <-> [3,6]
+    transPR = Pairing( 5, 6, 3, True )
+    transPR.transmitBy(trim)                    # [2,4] <-> [5,7]
+    transRR = Pairing( 5, 6, 3, False )
+    transRR.transmitBy(trim)                    # [2,4] <-> [5,7]
     translationDistanceTestCases = [
             [ preserving3, 3 ],
             [ preserving8, 8 ],
@@ -106,7 +116,12 @@ def _testTranslationDistance():
             [ contract, 4 ],
             [ truncPres, 3 ],
             [ trim, -1 ],
-            [ truncRev, -1 ] ]
+            [ truncRev, -1 ],
+            [ merge, 3 ],
+            [ transPP, 1 ],
+            [ transRP, -1 ],
+            [ transPR, -1 ],
+            [ transRR, 3 ] ]
     for pairing, distance in translationDistanceTestCases:
         msg = "{}\n    Should have ".format(pairing)
         if distance < 0:
