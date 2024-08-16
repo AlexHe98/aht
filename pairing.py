@@ -50,8 +50,11 @@ class Pairing:
         Initialises a pairing between [a,b] and [c,d], where
         b = a + width - 1 and d = c + width - 1.
 
-        The pairing is taken to be orientation-preserving if preserving is
-        set to True, and orientation-reversing if preserving is set to False.
+        In almost all cases, the pairing is taken to be
+        orientation-preserving if preserving is set to True, and
+        orientation-reversing if preserving is set to False. The only
+        exception is that when the width is equal to 1, the pairing is always
+        considered to be orientation-preserving.
 
         Pre-condition:
         --> The parameters a, c and width are all positive integers.
@@ -74,8 +77,11 @@ class Pairing:
         Sets this pairing to map between [a,b] and [c,d], where a <= c,
         b = a + width - 1 and d = c + width - 1.
 
-        The pairing is taken to be orientation-preserving if preserving is
-        set to True, and orientation-reversing if preserving is set to False.
+        In almost all cases, the pairing is taken to be
+        orientation-preserving if preserving is set to True, and
+        orientation-reversing if preserving is set to False. The only
+        exception is that when the width is equal to 1, the pairing is always
+        considered to be orientation-preserving.
 
         Pre-condition:
         --> The parameters a, c and width are all positive integers.
@@ -95,7 +101,7 @@ class Pairing:
         self._b = a + width - 1
         self._c = c
         self._d = c + width - 1
-        self._preserving = preserving
+        self._preserving = ( preserving or width == 1 )
 
         # We already know the width, so we can at least fill in this value.
         self._resetCache()

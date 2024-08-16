@@ -50,6 +50,8 @@ def _testEq():
     reverse0 = Pairing( 1, 2, 3, False )
     preserve1 = Pairing( 4, 3, 2, True )
     reverse1 = Pairing( 4, 3, 2, False )
+    width1Pres = Pairing( 2, 4, 1, True )
+    width1Rev = Pairing( 2, 4, 1, False )
     eqTestCases = [
             [ preserve0, preserve0.clone(), True ],
             [ preserve0, reverse0, False ],
@@ -58,7 +60,8 @@ def _testEq():
             [ reverse0, reverse1, False ],
             [ preserve1, preserve1.clone(), True ],
             [ preserve1, reverse1, False ],
-            [ reverse1, reverse1.clone(), True ] ]
+            [ reverse1, reverse1.clone(), True ],
+            [ width1Pres, width1Rev, True ] ]
     for me, you, eq in eqTestCases:
         msg = "{}\n    Should ".format(me)
         if eq:
@@ -254,9 +257,13 @@ def _testPreserving():
     print()
     preserving = Pairing( 1, 2, 3, True )
     reversing = Pairing( 1, 2, 3, False )
+    width1Pres = Pairing( 2, 4, 1, True )
+    width1Rev = Pairing( 2, 4, 1, False )
     preservingTestCases = [
             [ preserving, True ],
-            [ reversing, False ] ]
+            [ reversing, False ],
+            [ width1Pres, True ],
+            [ width1Rev, True ] ]
     for pairing, isPres in preservingTestCases:
         msg = "{}\n    Should be orientation-".format(pairing)
         if isPres:
@@ -294,6 +301,10 @@ def _testIsIdentity():
     merge.mergeWith(mergeOther)             # [2,18] <-> [5,12], period 3
     transPP = Pairing( 5, 12, 4, True )
     transPP.transmitBy(mergeOther)          # [2,5] <-> [3,6], period 1
+    width1Pres = Pairing( 2, 4, 1, True )
+    width1Rev = Pairing( 2, 4, 1, False )
+    width1PresIden = Pairing( 2, 2, 1, True )
+    width1RevIden = Pairing( 2, 2, 1, False )
     isIdentityTestCases = [
             [ iden, True ],
             [ preserving, False ],
@@ -304,7 +315,11 @@ def _testIsIdentity():
             [ trim, False ],
             [ truncRev, False ],
             [ merge, False ],
-            [ transPP, False ] ]
+            [ transPP, False ],
+            [ width1Pres, False ],
+            [ width1Rev, False ],
+            [ width1PresIden, True ],
+            [ width1RevIden, True ] ]
     for pairing, isIden in isIdentityTestCases:
         msg = "{}\n    Should ".format(pairing)
         if not isIden:
