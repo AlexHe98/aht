@@ -78,7 +78,45 @@ def _testWidth():
     print( " Pairing.width() " )
     print( "------------------------------------------------------------" )
     print()
-    #TODO
+    preserving4 = Pairing( 3, 11, 4, True )     # [3,6] <-> [11,14]
+    preserving12 = Pairing( 2, 5, 12, True )    # [2,13] <-> [5,16], period 3
+    reversing5 = Pairing( 1, 5, 5, False )      # [1,5] <-> [5,9]
+    contract4 = preserving4.clone()
+    contract4.contract( 7, 4 )                  # [3,6] <-> [7,10]
+    truncPres8 = preserving12.clone()
+    truncPres8.truncate(12)                     # [2,9] <-> [5,12]
+    trim4 = reversing5.clone()
+    trim4.trim()                                # [1,4] <-> [6,9]
+    truncRev2 = trim4.clone()
+    truncRev2.truncate(7)                       # [3,4] <-> [6,7]
+    merge17 = periodicPairing( 6, 21, 6 )
+    merge17.mergeWith(preserving12)             # [2,18] <-> [5,21], period 3
+    transPP = Pairing( 5, 12, 4, True )
+    transPP.transmitBy(preserving12)            # [2,5] <-> [3,6], period 1
+    transRP = Pairing( 5, 12, 4, False )
+    transRP.transmitBy(preserving12)            # [2,5] <-> [3,6]
+    transPR = Pairing( 5, 6, 3, True )
+    transPR.transmitBy(trim4)                   # [2,4] <-> [5,7]
+    transRR = Pairing( 5, 6, 3, False )
+    transRR.transmitBy(trim4)                   # [2,4] <-> [5,7]
+    widthTestCases = [
+            [ preserving4, 4 ],
+            [ preserving12, 12 ],
+            [ reversing5, 5 ],
+            [ contract4, 4 ],
+            [ truncPres8, 8 ],
+            [ trim4, 4 ],
+            [ truncRev2, 2 ],
+            [ merge17, 17 ],
+            [ transPP, 4 ],
+            [ transRP, 4 ],
+            [ transPR, 3 ],
+            [ transRR, 3 ] ]
+    for pairing, width in widthTestCases:
+        print( "{}\n    Should have width {}.".format( pairing, width ) )
+        if pairing.width() != width:
+            raise RuntimeError( "FAILED." )
+        print()
     return
 
 
