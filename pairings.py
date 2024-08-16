@@ -98,8 +98,30 @@ class Pairings:
         These elements will be arranged in ascending order in the returned
         list.
 
+        Let k = self.order(), and let N denote the largest integer in the
+        range of any of the pairings in this pseudogroup. This routine runs
+        in O(k^2*log(N))-time.
+
         Returns:
             A list containing data as detailed above.
         """
-        #TODO
-        pass
+        largest = 0
+        static = []
+        for pairing in self._pairings:
+            d = pairing.rangeEnd()
+            if d > largest:
+                # Could find new static intervals as subintervals of
+                # [largest+1,d].
+                static.append( [ largest + 1, d, d - largest ] )
+                largest = d
+
+            # For each point currently described by the static list, this
+            # point remains static if and only if it is fixed by the current
+            # pairing.
+            #NOTE At worst, each pairing only increases len(static) by adding
+            #   a constant, so in total len(static) is always O(k).
+            temp = []
+            for start, end, width in static:
+                temp.extend( pairing.fixedPoints( start, width ) )
+            static = temp
+        return static
