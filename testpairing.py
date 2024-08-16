@@ -264,7 +264,7 @@ def _testPreserving():
         else:
             print( msg + "reversing." )
         if ( pairing.isOrientationPreserving() != isPres or
-                pairing.isOrientationReversing == isPres ):
+                pairing.isOrientationReversing() == isPres ):
             raise RuntimeError( "FAILED." )
         print()
     return
