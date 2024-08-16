@@ -411,19 +411,46 @@ def _testPeriodicInterval():
     print( " Pairing.periodicInterval() " )
     print( "------------------------------------------------------------" )
     print()
+    reversing = Pairing( 3, 7, 8, False )   # [3,10] <-> [7,14]
     nonPeriodic = Pairing( 2, 6, 3, True )  # [2,4] <-> [6,8]
     periodic1 = Pairing( 1, 4, 3, True )    # [1,3] <-> [4,6], period 3
     periodic2 = Pairing( 2, 6, 5, True )    # [2,6] <-> [6,10], period 4
     periodic5 = Pairing( 5, 7, 7, True )    # [5,11] <-> [7,13], period 2
     periodic6 = Pairing( 6, 12, 8, True )   # [6,13] <-> [12,19], period 6
     periodic7 = Pairing( 7, 10, 7, True )   # [7,13] <-> [10,16], period 3
+    contractN = Pairing( 2, 7, 3, True )
+    contractN.contract( 5, 1 )              # [2,4] <-> [6,8]
+    contractP = nonPeriodic.clone()
+    contractP.contract( 5, 1 )              # [2,4] <-> [5,7], period 3
+    truncN = periodic1.clone()
+    truncN.truncate(5)                      # [1,2] <-> [4,5]
+    truncP = periodic5.clone()
+    truncP.truncate(9)                      # [5,7] <-> [7,9], period 2
+    trim = reversing.clone()
+    trim.trim()                             # [3,8] <-> [9,14]
+    merge = periodic6.clone()
+    merge.mergeWith(periodic7)              # [6,16] <-> [9,19], period 3
+    other = Pairing( 2, 5, 12, True )
+    transPP = Pairing( 5, 12, 4, True )
+    transPP.transmitBy(other)               # [2,5] <-> [3,6], period 1
+    transRP = Pairing( 5, 12, 4, False )
+    transRP.transmitBy(other)               # [2,5] <-> [3,6]
     periodicIntervalTestCases = [
+            [ reversing, () ],
             [ nonPeriodic, () ],
             [ periodic1, ( 1, 6, 3 ) ],
             [ periodic2, ( 2, 10, 4 ) ],
             [ periodic5, ( 5, 13, 2 ) ],
             [ periodic6, ( 6, 19, 6 ) ],
-            [ periodic7, ( 7, 16, 3 ) ] ]
+            [ periodic7, ( 7, 16, 3 ) ],
+            [ contractN, () ],
+            [ contractP, ( 2, 7, 3 ) ],
+            [ truncN, () ],
+            [ truncP, ( 5, 9, 2 ) ],
+            [ trim, () ],
+            [ merge, ( 6, 19, 3 ) ],
+            [ transPP, ( 2, 6, 1 ) ],
+            [ transRP, () ] ]
     for pairing, periodicInterval in periodicIntervalTestCases:
         msg = "{}\n    Should ".format(pairing)
         if periodicInterval:
