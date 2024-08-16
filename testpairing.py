@@ -276,13 +276,35 @@ def _testIsIdentity():
     print( " Pairing.isIdentity() " )
     print( "------------------------------------------------------------" )
     print()
-    iden = Pairing( 3, 3, 5, True )
-    preserving = Pairing( 3, 4, 5, True )
-    reversing = Pairing( 3, 3, 5, False )
+    iden = Pairing( 3, 3, 5, True )         # [3,7] <-> [3.7]
+    preserving = Pairing( 3, 4, 5, True )   # [3,7] <-> [4,8]
+    reversing = Pairing( 3, 3, 5, False )   # [3,7] <-> [3,7]
+    contractIden = iden.clone()
+    contractIden.contract( 4, 3 )           # [3,7] <-> [3,7]
+    truncIden = iden.clone()
+    truncIden.truncate(5)                   # [3,5] <-> [3,5]
+    truncPres = preserving.clone()
+    truncPres.truncate(5)                   # [3,4] <-> [4,5]
+    trim = reversing.clone()
+    trim.trim()                             # [3,4] <-> [6,7]
+    truncRev = trim.clone()
+    truncRev.truncate(6)                    # [4,4] <-> [6,6]
+    merge = periodicPairing( 6, 21, 6 )
+    mergeOther = Pairing( 2, 5, 12, True )
+    merge.mergeWith(mergeOther)             # [2,18] <-> [5,12], period 3
+    transPP = Pairing( 5, 12, 4, True )
+    transPP.transmitBy(mergeOther)          # [2,5] <-> [3,6], period 1
     isIdentityTestCases = [
             [ iden, True ],
             [ preserving, False ],
-            [ reversing, False ] ]
+            [ reversing, False ],
+            [ contractIden, True ],
+            [ truncIden, True ],
+            [ truncPres, False ],
+            [ trim, False ],
+            [ truncRev, False ],
+            [ merge, False ],
+            [ transPP, False ] ]
     for pairing, isIden in isIdentityTestCases:
         msg = "{}\n    Should ".format(pairing)
         if not isIden:
