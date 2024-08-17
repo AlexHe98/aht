@@ -24,9 +24,17 @@ def _testStatic():
         Pairing( 2, 5, 4, False ) ] )   # [2,5] <-> [5,8]
     static1 = [
             [ 5, 5, 1 ] ]
+    pairings2 = Pairings( [
+        Pairing( 1, 6, 1, False ),      # [1,1] <-> [6,6]
+        Pairing( 5, 12, 1, True ),      # [5,5] <-> [12,12]
+        Pairing( 4, 8, 5, False ) ] )   # [4,8] <-> [8,12]
+    static2 = [
+        [ 2, 3, 2 ],
+        [ 8, 8, 1 ] ] 
     staticCases = [
             [ pairings0, static0 ],
-            [ pairings1, static1 ] ]
+            [ pairings1, static1 ],
+            [ pairings2, static2 ] ]
     for pairings, static in staticCases:
         print( pairings.detail() )
         print( "Should have the following static intervals:" )
