@@ -426,6 +426,16 @@ def _testExtend():
     return
 
 
+def _testContract():
+    #######################################################################
+    print( "============================================================" )
+    print( " Weights.contract( start, width ) " )
+    print( "------------------------------------------------------------" )
+    print()
+    #TODO
+    return
+
+
 def _testWeights(testName):
     print()
 
@@ -436,7 +446,8 @@ def _testWeights(testName):
             "setZero",
             "addWeight",
             "transferBy",
-            "extend" ]
+            "extend",
+            "contract" ]
     if testName not in knownTestNames:
         if testName == "":
             print( "Need to supply a test name." )
@@ -460,6 +471,8 @@ def _testWeights(testName):
         _testTransferBy()
     if testName in { "all", "extend" }:
         _testExtend()
+    if testName in { "all", "contract" }:
+        _testContract()
 
     # End of test suite.
     print( "============================================================" )

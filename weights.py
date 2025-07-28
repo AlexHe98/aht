@@ -649,8 +649,30 @@ class Weights:
             self._weights.append(
                     [ self.intervalLength() + width, weight ] )
 
-    def contract(self):
+    def contract( self, start, width ):
         """
+        Contracts the interval [start,end], where end = start + width - 1,
+        and returns the contracted weights.
+
+        In detail, this routine returns a list of pairs of the form
+        [ width, weight ], where:
+        --> width is the width of a contracted subinterval; and
+        --> weight is the weight assigned to this subinterval.
         """
+        #TODO Flesh out documentation.
+        end = start + width - 1
+
+        # Iterate through and adjust constant-weight subintervals to realise
+        # the desired contraction, keeping track of all weights that are lost
+        # as a result of this operation.
+        index, _, q, weight = self._findSubinterval(start)
+        width = min(q,end) - start + 1
+        contractedWeights = []
+        contractedWidth = 0
+        while True:
+            #TODO
+            pass
         #TODO
-        pass
+
+        # All done!
+        return contractedWeights
