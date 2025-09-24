@@ -671,7 +671,7 @@ class Weights:
         contractedWidth = 0
         while True:
             #TODO
-            pass
+            raise NotImplementedError()
         #TODO
 
         # All done!
