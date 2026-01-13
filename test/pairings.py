@@ -2,8 +2,8 @@
 Test suite for the Pairings class.
 """
 from sys import argv
-from pairing import Pairing
-from pairings import Pairings
+from aht.pairing import Pairing
+from aht.pairings import Pairings
 
 
 def _testStatic():

@@ -2,9 +2,9 @@
 Test suite for the Weights class.
 """
 from sys import argv
-from weights import Weights
-from pairing import Pairing
-from orbiterror import WeightDimensionError
+from aht.weights import Weights
+from aht.pairing import Pairing
+from aht.orbiterror import WeightDimensionError
 
 
 def _testEmpty():
