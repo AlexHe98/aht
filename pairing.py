@@ -3,7 +3,7 @@ Implementation of pairings between subintervals of { 1, ..., N }, for some
 positive integer N.
 """
 from math import gcd
-from aht.orbiterror import *
+from orbiterror import *
 
 
 def periodicPairing( start, end, period ):

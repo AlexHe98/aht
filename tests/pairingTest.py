@@ -2,7 +2,7 @@
 Test suite for the Pairing class.
 """
 from sys import argv
-from aht.pairing import periodicPairing, Pairing
+from pairing import periodicPairing, Pairing
 
 
 def _testPeriodicPairing():

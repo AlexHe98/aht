@@ -2,7 +2,7 @@
 Implementation of weights on subintervals of { 1, ..., N }, for some positive
 integer N.
 """
-from aht.orbiterror import *
+from orbiterror import *
 
 
 def _vectorSum( v, w ):

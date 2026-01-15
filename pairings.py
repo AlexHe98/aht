@@ -1,8 +1,8 @@
 """
 Implementation of pseudogroups of interval pairings.
 """
-from aht.orbiterror import *
-from aht.pairing import Pairing
+from orbiterror import *
+from pairing import Pairing
 
 
 class Pairings:
